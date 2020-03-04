@@ -53,6 +53,17 @@
 
 When this item equipped in the helmet slot, claim outlines become visible. 
 
+## Protection Checks
+
+*Get Off My Lawn* currently checks for claims when the following actions occur:
+- Player block break
+- Player block interaction
+- Player entity damage
+- Player entity interaction
+- TNT explodes
+
+If the player does not own the claim, they are not allowed to finish (/start) the action. In the case of explosions, no blocks break.
+
 ## Installation: Users
 
 You'll need to install the [Fabric Loader](https://fabricmc.net/use/), [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api/files), and appropriate mod jar from the releases tab (or the CurseForge page).
