@@ -1,0 +1,17 @@
+{
+  "itemGroup.goml.group": "Get Off My Lawn",
+
+  "block.goml.makeshift_claim_anchor": "Makeshift Claim Anchor",
+  "block.goml.reinforced_claim_anchor": "Reinforced Claim Anchor",
+  "block.goml.glistening_claim_anchor": "Glistening Claim Anchor",
+  "block.goml.crystal_claim_anchor": "Crystal Claim Anchor",
+  "block.goml.emeradic_claim_anchor": "Emeradic Claim Anchor",
+  "block.goml.withered_claim_anchor": "Withered Claim Anchor",
+
+  "item.goml.goggles": "Goggles of (Claim) Revealing",
+  "item.goml.reinforced_upgrade_kit": "Reinforced Upgrade Kit",
+  "item.goml.glistening_upgrade_kit": "Glistening Upgrade Kit",
+  "item.goml.crystal_upgrade_kit": "Crystal Upgrade Kit",
+  "item.goml.emeradic_upgrade_kit": "Emeradic Upgrade Kit",
+  "item.goml.withered_upgrade_kit": "Withered Upgrade Kit"
+}

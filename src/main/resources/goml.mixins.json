@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "draylar.goml.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "TntEntityMixin"
+  ],
+  "client": [
+    "WorldRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

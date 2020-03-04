@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "goml:block/glistening_claim_anchor"
+  }
+}
