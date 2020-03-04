@@ -90,6 +90,27 @@ public class EventHandlers {
 
             return ActionResult.PASS;
         }));
+
+        // handle placing blocks at side of block not in claim
+        UseBlockCallback.EVENT.register(((playerEntity, world, hand, blockHitResult) -> {
+            Selection<Entry<Box, ClaimInfo>> sel = ClaimUtils.getClaimsAt(world, blockHitResult.getBlockPos().offset(blockHitResult.getSide()));
+
+            if(!sel.isEmpty()) {
+                AtomicBoolean hasPermission = new AtomicBoolean(true);
+
+                sel.forEach(claim -> {
+                    if(!ClaimUtils.playerHasPermission(claim, playerEntity)) {
+                        hasPermission.set(false);
+                    }
+                });
+
+                if(!hasPermission.get()) {
+                    return ActionResult.FAIL;
+                }
+            }
+
+            return ActionResult.PASS;
+        }));
     }
 
     private static void registerBreakBlockCallback() {
