@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -40,6 +41,9 @@ public class EventHandlers {
                 });
 
                 if(!hasPermission.get()) {
+                    // TODO: translatable text
+                    playerEntity.addChatMessage(new LiteralText("This entity is protected by a claim."), true);
+
                     return ActionResult.FAIL;
                 }
             }
@@ -62,6 +66,9 @@ public class EventHandlers {
                 });
 
                 if(!hasPermission.get()) {
+                    // TODO: translatable text
+                    playerEntity.addChatMessage(new LiteralText("This entity is protected by a claim."), true);
+
                     return ActionResult.FAIL;
                 }
             }
@@ -84,6 +91,9 @@ public class EventHandlers {
                 });
 
                 if(!hasPermission.get()) {
+                    // TODO: translatable text
+                    playerEntity.addChatMessage(new LiteralText("This block is protected by a claim."), true);
+
                     return ActionResult.FAIL;
                 }
             }
@@ -105,6 +115,9 @@ public class EventHandlers {
                 });
 
                 if(!hasPermission.get()) {
+                    // TODO: translatable text
+                    playerEntity.addChatMessage(new LiteralText("This block is protected by a claim."), true);
+
                     return ActionResult.FAIL;
                 }
             }
@@ -127,6 +140,9 @@ public class EventHandlers {
                 });
 
                 if(!hasPermission.get()) {
+                    // TODO: translatable text
+                    playerEntity.addChatMessage(new LiteralText("This block is protected by a claim."), true);
+
                     return ActionResult.FAIL;
                 }
             }
