@@ -112,6 +112,7 @@ public class ClaimCommand {
         if(!world.isClient()) {
             ClaimUtils.getClaimsAt(world, player.getBlockPos()).forEach(claimedArea -> {
                 // TODO: translatable text
+                // TODO: UUID -> Player name
                 player.sendMessage(new LiteralText(
                         new LiteralText("[GOML] ").formatted(Formatting.BLUE).asFormattedString() +
                         "Claim owner: " + claimedArea.getValue().getOwner()
