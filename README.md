@@ -4,6 +4,24 @@
 
 **To get started**, you'll have to craft a *Claim Anchor*. Each anchor has a different claim radius; after placing one, a box around it will be formed. This box is yours!
 
+**Makeshift**, radius of 10
+![](resources/makeshift_claim_anchor_recipe.png)
+
+**Reinforced**, radius of 25
+![](resources/reinforced_claim_anchor_recipe.png)
+
+**Glistening**, radius of 50
+![](resources/glistening_claim_anchor_recipe.png)
+
+**Crystal**, radius of 75
+![](resources/crystal_claim_anchor_recipe.png)
+
+**Emeradic**, radius of 125
+![](resources/emeradic_claim_anchor_recipe.png)
+
+**Withered**, radius of 200
+![](resources/withered_claim_anchor_recipe.png)
+
 [NYI] **To configure your claim**, you can interact with the anchor block. A UI will appear that offers several configuration options:
 - The general settings tab can be used to define blanket permissions for non-specified players.
 - The player list can be used to define permissions for individual players
