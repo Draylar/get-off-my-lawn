@@ -1,13 +1,14 @@
 package draylar.goml;
 
+import draylar.goml.cca.ClaimComponent;
+import draylar.goml.cca.WorldClaimComponent;
+import draylar.goml.command.ClaimCommand;
+import draylar.goml.registry.Blocks;
+import draylar.goml.registry.Items;
 import nerdhub.cardinal.components.api.ComponentRegistry;
 import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.event.WorldComponentCallback;
 import net.fabricmc.api.ModInitializer;
-import draylar.goml.cca.ClaimComponent;
-import draylar.goml.cca.WorldClaimComponent;
-import draylar.goml.registry.Blocks;
-import draylar.goml.registry.Items;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -27,6 +28,7 @@ public class GetOffMyLawn implements ModInitializer {
 		Blocks.init();
 		Items.init();
 		EventHandlers.init();
+		ClaimCommand.init();
 	}
 
 	public static Identifier id(String name) {
