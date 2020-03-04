@@ -12,6 +12,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClaimUtils {
 
+    /**
+     * Returns all claims at the given position in the given world.
+     *
+     * <p>Under normal circumstances, only 1 claim will exist at a location, but multiple may still be returned.
+     *
+     * @param world  world to check for claim in
+     * @param pos  position to check at
+     * @return  claims at the given position in the given world
+     */
     public static Selection<Entry<Box, ClaimInfo>> getClaimsAt(WorldView world, BlockPos pos) {
         return GetOffMyLawn.CLAIM.get(world).getClaims().entries(box -> box.contains(Box.create(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)));
     }
