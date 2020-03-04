@@ -41,8 +41,26 @@ Drop the mod jar and Fabric API into your `/mods` folder and boot up the game.
 - Check areas for claims
 - Add custom Anchor Augments
 
-To install the mod to your development environment, you can use jitpack:
+To install the mod to your development environment:
  
+`build.gradle`
+```groovy
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+```
+
+`build.gradle`
+```groovy
+dependencies {
+    modImplementation 'com.github.Draylar:get-off-my-lawn:${project.goml_version}'
+}
+```
+
+`gradle.properties`
+```groovy
+goml_version=master-SNAPSHOT
+```
 
 ## License
 
