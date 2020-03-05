@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Mixin which prevents TNT primed by player A from damaging blocks in player B's claim.
+ * Mixin which prevents TNT primed by player A from going off in player B's claim.
  */
 @Mixin(TntEntity.class)
 public abstract class TntEntityMixin extends Entity {
