@@ -5,21 +5,17 @@ import com.jamieswhiteshirt.rtree3i.Entry;
 import com.jamieswhiteshirt.rtree3i.Selection;
 import draylar.goml.api.ClaimInfo;
 import draylar.goml.api.ClaimUtils;
-import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.TntEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Mixin which prevents TNT primed by player A from going off in player B's claim.
@@ -36,18 +32,12 @@ public abstract class TntEntityMixin extends Entity {
     @Inject(at = @At("HEAD"), method = "explode", cancellable = true)
     private void attemptExplosion(CallbackInfo ci) {
         if (causingEntity instanceof PlayerEntity) {
-            Selection<Entry<Box, ClaimInfo>> sel = ClaimUtils.getClaimsAt(world, getBlockPos());
+            Selection<Entry<Box, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, getBlockPos());
 
-            if (!sel.isEmpty()) {
-                AtomicBoolean hasPermission = new AtomicBoolean(true);
+            if (!claimsFound.isEmpty()) {
+                boolean hasPermission = claimsFound.allMatch(boxInfo -> ClaimUtils.playerHasPermission(boxInfo, (PlayerEntity) causingEntity));
 
-                sel.forEach(claim -> {
-                    if (!ClaimUtils.playerHasPermission(claim, (PlayerEntity) this.causingEntity)) {
-                        hasPermission.set(false);
-                    }
-                });
-
-                if (!hasPermission.get()) {
+                if (!hasPermission) {
                     ci.cancel();
                 }
             }

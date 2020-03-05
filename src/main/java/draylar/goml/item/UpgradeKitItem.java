@@ -3,12 +3,12 @@ package draylar.goml.item;
 import com.jamieswhiteshirt.rtree3i.Box;
 import com.jamieswhiteshirt.rtree3i.Entry;
 import com.jamieswhiteshirt.rtree3i.Selection;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import draylar.goml.GetOffMyLawn;
 import draylar.goml.api.ClaimInfo;
 import draylar.goml.api.ClaimUtils;
 import draylar.goml.block.ClaimAnchorBlock;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
@@ -23,7 +23,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class UpgradeKitItem extends Item {
@@ -55,14 +54,7 @@ public class UpgradeKitItem extends Item {
             );
 
             if(!claimsFound.isEmpty()) {
-                // see if we have permission in each claim (should only be one)
-                AtomicBoolean hasPermission = new AtomicBoolean(true);
-
-                claimsFound.forEach(claim -> {
-                    if(!claim.getValue().getOwner().equals(context.getPlayer().getUuid())) {
-                        hasPermission.set(false);
-                    }
-                });
+                boolean hasPermission = claimsFound.allMatch(boxInfo -> ClaimUtils.playerHasPermission(boxInfo, context.getPlayer()));
 
                 // get claim at location
                 AtomicReference<Entry<Box, ClaimInfo>> currentClaim = new AtomicReference<>();
@@ -74,7 +66,7 @@ public class UpgradeKitItem extends Item {
 
 
                 // if we have permission
-                if(hasPermission.get()) {
+                if(hasPermission) {
 
                     // if we don't overlap with another claim
                     if(ClaimUtils.getClaimsInBox(world, pos.add(-to.getRadius(), -to.getRadius(), -to.getRadius()), pos.add(to.getRadius(), to.getRadius(), to.getRadius()), currentClaim.get().getKey()).isEmpty()) {

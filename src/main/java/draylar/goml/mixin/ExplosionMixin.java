@@ -37,7 +37,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @Mixin(Explosion.class)
 public abstract class ExplosionMixin {
@@ -146,18 +145,10 @@ public abstract class ExplosionMixin {
     @Unique
     private boolean isValid(BlockPos blockPos) {
         if(getCausingEntity() instanceof PlayerEntity) {
-            Selection<Entry<Box, ClaimInfo>> sel = ClaimUtils.getClaimsAt(world, blockPos);
+            Selection<Entry<Box, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, blockPos);
 
-            if (!sel.isEmpty()) {
-                AtomicBoolean hasPermission = new AtomicBoolean(true);
-
-                sel.forEach(claim -> {
-                    if (!ClaimUtils.playerHasPermission(claim, (PlayerEntity) getCausingEntity())) {
-                        hasPermission.set(false);
-                    }
-                });
-
-                return hasPermission.get();
+            if (!claimsFound.isEmpty()) {
+                return claimsFound.allMatch(boxInfo -> ClaimUtils.playerHasPermission(boxInfo, (PlayerEntity) getCausingEntity()));
             }
         }
 

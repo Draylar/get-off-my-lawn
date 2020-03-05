@@ -11,13 +11,11 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RayTraceContext;
@@ -28,9 +26,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * UseBlockCallback doesn't seem to cover buckets well.
@@ -47,18 +42,12 @@ public class BucketItemMixin {
         BlockHitResult blockHitResult = (BlockHitResult) hitResult;
         BlockPos blockPos = blockHitResult.getBlockPos();
 
-        Selection<Entry<Box, ClaimInfo>> sel = ClaimUtils.getClaimsAt(world, blockPos);
+        Selection<Entry<Box, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, blockPos);
 
-        if (!sel.isEmpty()) {
-            AtomicBoolean hasPermission = new AtomicBoolean(true);
+        if (!claimsFound.isEmpty()) {
+            boolean hasPermission = claimsFound.allMatch(boxInfo -> ClaimUtils.playerHasPermission(boxInfo, user));
 
-            sel.forEach(claim -> {
-                if (!ClaimUtils.playerHasPermission(claim, user)) {
-                    hasPermission.set(false);
-                }
-            });
-
-            if (!hasPermission.get()) {
+            if (!hasPermission) {
                 // TODO: translatable text
                 user.addChatMessage(new LiteralText("This block is protected by a claim."), true);
                 cir.setReturnValue(TypedActionResult.fail(user.getStackInHand(hand)));
