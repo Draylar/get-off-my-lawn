@@ -4,6 +4,7 @@ import com.jamieswhiteshirt.rtree3i.Box;
 import com.jamieswhiteshirt.rtree3i.Entry;
 import com.jamieswhiteshirt.rtree3i.Selection;
 import draylar.goml.GetOffMyLawn;
+import draylar.goml.api.ClaimBox;
 import draylar.goml.api.ClaimInfo;
 import draylar.goml.api.ClaimUtils;
 import draylar.goml.block.ClaimAnchorBlock;
@@ -49,15 +50,15 @@ public class UpgradeKitItem extends Item {
 
         if(block.getBlock().equals(from)) {
             // get claims at block position
-            Selection<Entry<Box, ClaimInfo>> claimsFound =  GetOffMyLawn.CLAIM.get(world).getClaims().entries(box ->
+            Selection<Entry<ClaimBox, ClaimInfo>> claimsFound =  GetOffMyLawn.CLAIM.get(world).getClaims().entries(box ->
                     box.contains(Box.create(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1))
             );
 
             if(!claimsFound.isEmpty()) {
-                boolean noPermission = claimsFound.anyMatch((Entry<Box, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(context.getPlayer().getUuid()));
+                boolean noPermission = claimsFound.anyMatch((Entry<ClaimBox, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(context.getPlayer().getUuid()));
 
                 // get claim at location
-                AtomicReference<Entry<Box, ClaimInfo>> currentClaim = new AtomicReference<>();
+                AtomicReference<Entry<ClaimBox, ClaimInfo>> currentClaim = new AtomicReference<>();
                 claimsFound.forEach(claim -> {
                     if (claim.getValue().getOrigin().equals(pos) && claim.getValue().getOwner().equals(context.getPlayer().getUuid())) {
                         currentClaim.set(claim);
@@ -69,7 +70,7 @@ public class UpgradeKitItem extends Item {
                 if(!noPermission) {
 
                     // if we don't overlap with another claim
-                    if(ClaimUtils.getClaimsInBox(world, pos.add(-to.getRadius(), -to.getRadius(), -to.getRadius()), pos.add(to.getRadius(), to.getRadius(), to.getRadius()), currentClaim.get().getKey()).isEmpty()) {
+                    if(ClaimUtils.getClaimsInBox(world, pos.add(-to.getRadius(), -to.getRadius(), -to.getRadius()), pos.add(to.getRadius(), to.getRadius(), to.getRadius()), currentClaim.get().getKey().toBox()).isEmpty()) {
 
                         // remove claim
                         GetOffMyLawn.CLAIM.get(world).remove(currentClaim.get().getKey());
@@ -79,11 +80,7 @@ public class UpgradeKitItem extends Item {
 
                         // new claim
                         ClaimInfo claimInfo = new ClaimInfo(context.getPlayer().getUuid(), pos);
-                        BlockPos lower = pos.add(-to.getRadius(), -to.getRadius(), -to.getRadius());
-                        BlockPos upper = pos.add(to.getRadius(), to.getRadius(), to.getRadius());
-
-                        GetOffMyLawn.CLAIM.get(world).add(Box.create(lower.getX(), lower.getY(), lower.getZ(), upper.getX(), upper.getY(), upper.getZ()), claimInfo);
-                        GetOffMyLawn.CLAIM.get(world).sync();
+                        GetOffMyLawn.CLAIM.get(world).add(new ClaimBox(pos, to.getRadius()), claimInfo);
                     }
                 }
             }

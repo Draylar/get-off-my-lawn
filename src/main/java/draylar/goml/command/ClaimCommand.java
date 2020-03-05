@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import draylar.goml.GetOffMyLawn;
+import draylar.goml.api.ClaimBox;
 import draylar.goml.api.ClaimInfo;
 import draylar.goml.api.ClaimUtils;
 import net.fabricmc.fabric.api.registry.CommandRegistry;
@@ -77,7 +78,7 @@ public class ClaimCommand {
         AtomicInteger numberOfClaimsTotal = new AtomicInteger();
 
         server.getWorlds().forEach(world -> {
-            RTreeMap<Box, ClaimInfo> worldClaims = GetOffMyLawn.CLAIM.get(world).getClaims();
+            RTreeMap<ClaimBox, ClaimInfo> worldClaims = GetOffMyLawn.CLAIM.get(world).getClaims();
             int numberOfClaimsWorld = worldClaims.size();
             numberOfClaimsTotal.addAndGet(1);
 
@@ -133,7 +134,7 @@ public class ClaimCommand {
         ServerWorld world = context.getSource().getWorld();
         ServerPlayerEntity player = context.getSource().getPlayer();
 
-        RTreeMap<Box, ClaimInfo> worldClaims = GetOffMyLawn.CLAIM.get(world).getClaims();
+        RTreeMap<ClaimBox, ClaimInfo> worldClaims = GetOffMyLawn.CLAIM.get(world).getClaims();
         int numberOfClaims = worldClaims.size();
 
         // TODO: translatable text

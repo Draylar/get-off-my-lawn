@@ -4,6 +4,7 @@ import com.jamieswhiteshirt.rtree3i.Box;
 import com.jamieswhiteshirt.rtree3i.Entry;
 import com.jamieswhiteshirt.rtree3i.Selection;
 import com.mojang.datafixers.util.Pair;
+import draylar.goml.api.ClaimBox;
 import draylar.goml.api.ClaimInfo;
 import draylar.goml.api.ClaimUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -145,10 +146,10 @@ public abstract class ExplosionMixin {
     @Unique
     private boolean isValid(BlockPos blockPos) {
         if(getCausingEntity() instanceof PlayerEntity) {
-            Selection<Entry<Box, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, blockPos);
+            Selection<Entry<ClaimBox, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, blockPos);
 
             if (!claimsFound.isEmpty()) {
-                return !claimsFound.anyMatch((Entry<Box, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(getCausingEntity().getUuid()));
+                return !claimsFound.anyMatch((Entry<ClaimBox, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(getCausingEntity().getUuid()));
             }
         }
 

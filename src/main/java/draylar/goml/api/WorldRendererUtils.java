@@ -18,17 +18,13 @@ public class WorldRendererUtils {
             return;
         }
 
-        GetOffMyLawn.CLAIM.get(MinecraftClient.getInstance().world).getClaims().entries().forEach(boxClaimInfoEntry -> {
-            BlockPos startPos = new BlockPos(boxClaimInfoEntry.getKey().x1(), boxClaimInfoEntry.getKey().y1(), boxClaimInfoEntry.getKey().z1());
-            BlockPos endPos = new BlockPos(boxClaimInfoEntry.getKey().x2(), boxClaimInfoEntry.getKey().y2(), boxClaimInfoEntry.getKey().z2());
-
-            int sizeX = endPos.getX() - startPos.getX();
-            int sizeY = endPos.getY() - startPos.getY();
-            int sizeZ = endPos.getZ() - startPos.getZ();
+        GetOffMyLawn.CLAIM.get(MinecraftClient.getInstance().world).getClaims().entries().forEach(claim -> {
+            BlockPos claimPos = claim.getKey().getOrigin();
+            int radius = claim.getKey().getRadius();
 
             stack.push();
-            stack.translate(startPos.getX() - camPos.x, startPos.getY() - camPos.y, startPos.getZ() - camPos.z);
-            net.minecraft.client.render.WorldRenderer.drawBox(stack, bufferBuilders.getEffectVertexConsumers().getBuffer(RenderLayer.getLines()), 0, 0, 0, sizeX, sizeY, sizeZ, 0.9F, 0.9F, 0.9F, 1.0F, 0.5F, 0.5F, 0.5F);
+            stack.translate(claimPos.getX() - camPos.x, claimPos.getY() - camPos.y, claimPos.getZ() - camPos.z);
+            net.minecraft.client.render.WorldRenderer.drawBox(stack, bufferBuilders.getEffectVertexConsumers().getBuffer(RenderLayer.getLines()), -radius, -radius, -radius, radius, radius, radius, 0.9F, 0.9F, 0.9F, 1.0F, 0.5F, 0.5F, 0.5F);
             stack.pop();
         });
     }

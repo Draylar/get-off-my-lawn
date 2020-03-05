@@ -3,6 +3,7 @@ package draylar.goml.mixin;
 import com.jamieswhiteshirt.rtree3i.Box;
 import com.jamieswhiteshirt.rtree3i.Entry;
 import com.jamieswhiteshirt.rtree3i.Selection;
+import draylar.goml.api.ClaimBox;
 import draylar.goml.api.ClaimInfo;
 import draylar.goml.api.ClaimUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -42,10 +43,10 @@ public class BucketItemMixin {
         BlockHitResult blockHitResult = (BlockHitResult) hitResult;
         BlockPos blockPos = blockHitResult.getBlockPos();
 
-        Selection<Entry<Box, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, blockPos);
+        Selection<Entry<ClaimBox, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, blockPos);
 
         if (!claimsFound.isEmpty()) {
-            boolean noPermission = claimsFound.anyMatch((Entry<Box, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(user.getUuid()));
+            boolean noPermission = claimsFound.anyMatch((Entry<ClaimBox, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(user.getUuid()));
 
             if(noPermission) {
                 // TODO: translatable text

@@ -1,8 +1,8 @@
 package draylar.goml;
 
-import com.jamieswhiteshirt.rtree3i.Box;
 import com.jamieswhiteshirt.rtree3i.Entry;
 import com.jamieswhiteshirt.rtree3i.Selection;
+import draylar.goml.api.ClaimBox;
 import draylar.goml.api.ClaimInfo;
 import draylar.goml.api.ClaimUtils;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
@@ -27,10 +27,10 @@ public class EventHandlers {
 
     private static void registerInteractEntityCallback() {
         UseEntityCallback.EVENT.register((playerEntity, world, hand, entity, entityHitResult) -> {
-            Selection<Entry<Box, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, entity.getBlockPos());
+            Selection<Entry<ClaimBox, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, entity.getBlockPos());
 
             if(!claimsFound.isEmpty()) {
-                boolean noPermission = claimsFound.anyMatch((Entry<Box, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(playerEntity.getUuid()));
+                boolean noPermission = claimsFound.anyMatch((Entry<ClaimBox, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(playerEntity.getUuid()));
 
                 if(noPermission) {
                     // TODO: translatable text
@@ -46,10 +46,10 @@ public class EventHandlers {
 
     private static void registerAttackEntityCallback() {
         AttackEntityCallback.EVENT.register(((playerEntity, world, hand, entity, entityHitResult) -> {
-            Selection<Entry<Box, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, entity.getBlockPos());
+            Selection<Entry<ClaimBox, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, entity.getBlockPos());
 
             if(!claimsFound.isEmpty()) {
-                boolean noPermission = claimsFound.anyMatch((Entry<Box, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(playerEntity.getUuid()));
+                boolean noPermission = claimsFound.anyMatch((Entry<ClaimBox, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(playerEntity.getUuid()));
 
                 if(noPermission) {
                     // TODO: translatable text
@@ -65,10 +65,10 @@ public class EventHandlers {
 
     private static void registerInteractBlockCallback() {
         UseBlockCallback.EVENT.register(((playerEntity, world, hand, blockHitResult) -> {
-            Selection<Entry<Box, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, blockHitResult.getBlockPos());
+            Selection<Entry<ClaimBox, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, blockHitResult.getBlockPos());
 
             if(!claimsFound.isEmpty()) {
-                boolean noPermission = claimsFound.anyMatch((Entry<Box, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(playerEntity.getUuid()));
+                boolean noPermission = claimsFound.anyMatch((Entry<ClaimBox, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(playerEntity.getUuid()));
 
                 if(noPermission) {
                     // TODO: translatable text
@@ -83,10 +83,10 @@ public class EventHandlers {
 
         // handle placing blocks at side of block not in claim
         UseBlockCallback.EVENT.register(((playerEntity, world, hand, blockHitResult) -> {
-            Selection<Entry<Box, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, blockHitResult.getBlockPos().offset(blockHitResult.getSide()));
+            Selection<Entry<ClaimBox, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, blockHitResult.getBlockPos().offset(blockHitResult.getSide()));
 
             if(!claimsFound.isEmpty()) {
-                boolean noPermission = claimsFound.anyMatch((Entry<Box, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(playerEntity.getUuid()));
+                boolean noPermission = claimsFound.anyMatch((Entry<ClaimBox, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(playerEntity.getUuid()));
 
                 if(noPermission) {
                     // TODO: translatable text
@@ -102,10 +102,10 @@ public class EventHandlers {
 
     private static void registerBreakBlockCallback() {
         AttackBlockCallback.EVENT.register((playerEntity, world, hand, blockPos, direction) -> {
-            Selection<Entry<Box, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, blockPos);
+            Selection<Entry<ClaimBox, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, blockPos);
 
             if(!claimsFound.isEmpty()) {
-                boolean noPermission = claimsFound.anyMatch((Entry<Box, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(playerEntity.getUuid()));
+                boolean noPermission = claimsFound.anyMatch((Entry<ClaimBox, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(playerEntity.getUuid()));
 
                 if(noPermission) {
                     // TODO: translatable text
