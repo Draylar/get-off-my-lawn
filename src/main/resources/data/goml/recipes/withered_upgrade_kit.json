@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#i#",
+    "IOI",
+    "#i#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:nether_bricks"
+    },
+    "i": {
+      "item": "minecraft:nether_star"
+    },
+    "I": {
+      "item": "minecraft:soul_sand"
+    },
+    "O": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "goml:withered_upgrade_kit",
+    "count": 1
+  }
+}

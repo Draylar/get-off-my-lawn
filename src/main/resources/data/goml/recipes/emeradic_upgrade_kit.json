@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#i#",
+    "IOI",
+    "#i#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:stone"
+    },
+    "i": {
+      "item": "minecraft:emerald"
+    },
+    "I": {
+      "item": "minecraft:emerald_block"
+    },
+    "O": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "goml:emeradic_upgrade_kit",
+    "count": 1
+  }
+}

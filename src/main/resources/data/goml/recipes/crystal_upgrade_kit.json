@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#i#",
+    "IOI",
+    "#i#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:stone"
+    },
+    "i": {
+      "item": "minecraft:diamond"
+    },
+    "I": {
+      "item": "minecraft:diamond_block"
+    },
+    "O": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "goml:crystal_upgrade_kit",
+    "count": 1
+  }
+}
