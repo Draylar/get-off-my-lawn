@@ -30,9 +30,9 @@ public class EventHandlers {
             Selection<Entry<Box, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, entity.getBlockPos());
 
             if(!claimsFound.isEmpty()) {
-                boolean hasPermission = claimsFound.allMatch(boxInfo -> ClaimUtils.playerHasPermission(boxInfo, playerEntity));
+                boolean noPermission = claimsFound.anyMatch((Entry<Box, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(playerEntity.getUuid()));
 
-                if(!hasPermission) {
+                if(noPermission) {
                     // TODO: translatable text
                     playerEntity.addChatMessage(new LiteralText("This entity is protected by a claim."), true);
 
@@ -49,9 +49,9 @@ public class EventHandlers {
             Selection<Entry<Box, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, entity.getBlockPos());
 
             if(!claimsFound.isEmpty()) {
-                boolean hasPermission = claimsFound.allMatch(boxInfo -> ClaimUtils.playerHasPermission(boxInfo, playerEntity));
+                boolean noPermission = claimsFound.anyMatch((Entry<Box, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(playerEntity.getUuid()));
 
-                if(!hasPermission) {
+                if(noPermission) {
                     // TODO: translatable text
                     playerEntity.addChatMessage(new LiteralText("This entity is protected by a claim."), true);
 
@@ -68,9 +68,9 @@ public class EventHandlers {
             Selection<Entry<Box, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, blockHitResult.getBlockPos());
 
             if(!claimsFound.isEmpty()) {
-                boolean hasPermission = claimsFound.allMatch(boxInfo -> ClaimUtils.playerHasPermission(boxInfo, playerEntity));
+                boolean noPermission = claimsFound.anyMatch((Entry<Box, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(playerEntity.getUuid()));
 
-                if(!hasPermission) {
+                if(noPermission) {
                     // TODO: translatable text
                     playerEntity.addChatMessage(new LiteralText("This block is protected by a claim."), true);
 
@@ -86,9 +86,9 @@ public class EventHandlers {
             Selection<Entry<Box, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, blockHitResult.getBlockPos().offset(blockHitResult.getSide()));
 
             if(!claimsFound.isEmpty()) {
-                boolean hasPermission = claimsFound.allMatch(boxInfo -> ClaimUtils.playerHasPermission(boxInfo, playerEntity));
+                boolean noPermission = claimsFound.anyMatch((Entry<Box, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(playerEntity.getUuid()));
 
-                if(!hasPermission) {
+                if(noPermission) {
                     // TODO: translatable text
                     playerEntity.addChatMessage(new LiteralText("This block is protected by a claim."), true);
 
@@ -105,9 +105,9 @@ public class EventHandlers {
             Selection<Entry<Box, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, blockPos);
 
             if(!claimsFound.isEmpty()) {
-                boolean hasPermission = claimsFound.allMatch(boxInfo -> ClaimUtils.playerHasPermission(boxInfo, playerEntity));
+                boolean noPermission = claimsFound.anyMatch((Entry<Box, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(playerEntity.getUuid()));
 
-                if(!hasPermission) {
+                if(noPermission) {
                     // TODO: translatable text
                     playerEntity.addChatMessage(new LiteralText("This block is protected by a claim."), true);
 

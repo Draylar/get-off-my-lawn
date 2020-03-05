@@ -45,9 +45,9 @@ public class BucketItemMixin {
         Selection<Entry<Box, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, blockPos);
 
         if (!claimsFound.isEmpty()) {
-            boolean hasPermission = claimsFound.allMatch(boxInfo -> ClaimUtils.playerHasPermission(boxInfo, user));
+            boolean noPermission = claimsFound.anyMatch((Entry<Box, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(user.getUuid()));
 
-            if (!hasPermission) {
+            if(noPermission) {
                 // TODO: translatable text
                 user.addChatMessage(new LiteralText("This block is protected by a claim."), true);
                 cir.setReturnValue(TypedActionResult.fail(user.getStackInHand(hand)));

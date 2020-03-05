@@ -54,7 +54,7 @@ public class UpgradeKitItem extends Item {
             );
 
             if(!claimsFound.isEmpty()) {
-                boolean hasPermission = claimsFound.allMatch(boxInfo -> ClaimUtils.playerHasPermission(boxInfo, context.getPlayer()));
+                boolean noPermission = claimsFound.anyMatch((Entry<Box, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(context.getPlayer().getUuid()));
 
                 // get claim at location
                 AtomicReference<Entry<Box, ClaimInfo>> currentClaim = new AtomicReference<>();
@@ -66,7 +66,7 @@ public class UpgradeKitItem extends Item {
 
 
                 // if we have permission
-                if(hasPermission) {
+                if(!noPermission) {
 
                     // if we don't overlap with another claim
                     if(ClaimUtils.getClaimsInBox(world, pos.add(-to.getRadius(), -to.getRadius(), -to.getRadius()), pos.add(to.getRadius(), to.getRadius(), to.getRadius()), currentClaim.get().getKey()).isEmpty()) {

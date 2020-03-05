@@ -148,7 +148,7 @@ public abstract class ExplosionMixin {
             Selection<Entry<Box, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, blockPos);
 
             if (!claimsFound.isEmpty()) {
-                return claimsFound.allMatch(boxInfo -> ClaimUtils.playerHasPermission(boxInfo, (PlayerEntity) getCausingEntity()));
+                return !claimsFound.anyMatch((Entry<Box, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(getCausingEntity().getUuid()));
             }
         }
 
