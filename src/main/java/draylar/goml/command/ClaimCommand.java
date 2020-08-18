@@ -6,7 +6,6 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import draylar.goml.GetOffMyLawn;
-import draylar.goml.api.ClaimBox;
 import draylar.goml.api.ClaimInfo;
 import draylar.goml.api.ClaimUtils;
 import net.fabricmc.fabric.api.registry.CommandRegistry;
@@ -78,25 +77,19 @@ public class ClaimCommand {
         AtomicInteger numberOfClaimsTotal = new AtomicInteger();
 
         server.getWorlds().forEach(world -> {
-            RTreeMap<ClaimBox, ClaimInfo> worldClaims = GetOffMyLawn.CLAIM.get(world).getClaims();
+            RTreeMap<Box, ClaimInfo> worldClaims = GetOffMyLawn.CLAIM.get(world).getClaims();
             int numberOfClaimsWorld = worldClaims.size();
             numberOfClaimsTotal.addAndGet(1);
 
             // TODO: translatable text
-           player
-                    .sendMessage(new LiteralText(
-                            new LiteralText("[GOML] ").formatted(Formatting.BLUE).asFormattedString() +
-                                    "Number of claims in " + world.getDimension().getType().toString() + ": " + numberOfClaimsWorld)
-                    );
+           player.sendMessage(new LiteralText(new LiteralText("GOML ") +
+                                    "Number of claims in " + world.getDimension().toString() + ": " + numberOfClaimsWorld), false);
         });
 
         // TODO: translatable text
-        player
-                .sendMessage(new LiteralText(
-                        new LiteralText("[GOML] ").formatted(Formatting.BLUE).asFormattedString() +
-                                "Number of claims across all worlds: " + numberOfClaimsTotal.get())
-                );
-
+        player.sendMessage(new LiteralText(
+                        new LiteralText("GOML ") +
+                                "Number of claims across all worlds: " + numberOfClaimsTotal.get()), false);
         return 1;
     }
 
@@ -115,9 +108,8 @@ public class ClaimCommand {
                 // TODO: translatable text
                 // TODO: UUID -> Player name
                 player.sendMessage(new LiteralText(
-                        new LiteralText("[GOML] ").formatted(Formatting.BLUE).asFormattedString() +
-                        "Claim owner: " + claimedArea.getValue().getOwner()
-                ));
+                        new LiteralText("GOML ") +
+                        "Claim owner: " + claimedArea.getValue().getOwner()), false);
             });
         }
 
@@ -134,16 +126,12 @@ public class ClaimCommand {
         ServerWorld world = context.getSource().getWorld();
         ServerPlayerEntity player = context.getSource().getPlayer();
 
-        RTreeMap<ClaimBox, ClaimInfo> worldClaims = GetOffMyLawn.CLAIM.get(world).getClaims();
+        RTreeMap<Box, ClaimInfo> worldClaims = GetOffMyLawn.CLAIM.get(world).getClaims();
         int numberOfClaims = worldClaims.size();
 
         // TODO: translatable text
-        player
-                .sendMessage(new LiteralText(
-                        new LiteralText("[GOML] ").formatted(Formatting.BLUE).asFormattedString() +
-                                "Number of claims in " + world.getDimension().getType().toString() + ": " + numberOfClaims)
-                );
-
+        player.sendMessage(new LiteralText(new LiteralText("GOML ") +
+                        "Number of claims in " + world.getDimension().toString() + ": " + numberOfClaims), false);
         return 1;
     }
 
@@ -165,9 +153,8 @@ public class ClaimCommand {
 
                 // TODO: translatable text
                 player.sendMessage(new LiteralText(
-                        new LiteralText("[GOML] ").formatted(Formatting.BLUE).asFormattedString() +
-                                "Removed claim in " + world.getDimension().getType().toString() + " with origin of " + claimedArea.getValue().getOrigin() + ".")
-                );
+                        new LiteralText("GOML ") + "Removed claim in " + world.getDimension().toString() +
+                                " with origin of " + claimedArea.getValue().getOrigin() + "."), false);
             });
         }
 
@@ -184,15 +171,15 @@ public class ClaimCommand {
         ServerPlayerEntity player = context.getSource().getPlayer();
 
         // TODO: translatable text
-        player.sendMessage(new LiteralText("[Get Off My Lawn Help] ").formatted(Formatting.BLUE));
-        player.sendMessage(new LiteralText("-------------------------------------").formatted(Formatting.BLUE));
-        player.sendMessage(new LiteralText("/goml - prints an overview of all claims across all worlds."));
-        player.sendMessage(new LiteralText("/goml help - prints this message."));
-        player.sendMessage(new LiteralText("/goml info - prints information about any claims at the user's position."));
-        player.sendMessage(new LiteralText("/goml remove - removes any claims at the user's position."));
-        player.sendMessage(new LiteralText("/goml world - prints an overview of claims in the user's world."));
-        player.sendMessage(new LiteralText("-------------------------------------").formatted(Formatting.BLUE));
-        player.sendMessage(new LiteralText("GitHub repository: https://github.com/Draylar/get-off-my-lawn"));
+        player.sendMessage(new LiteralText("[Get Off My Lawn Help] "), false);
+        player.sendMessage(new LiteralText("-------------------------------------"), false);
+        player.sendMessage(new LiteralText("/goml - prints an overview of all claims across all worlds."), false);
+        player.sendMessage(new LiteralText("/goml help - prints this message."), false);
+        player.sendMessage(new LiteralText("/goml info - prints information about any claims at the user's position."), false);
+        player.sendMessage(new LiteralText("/goml remove - removes any claims at the user's position."), false);
+        player.sendMessage(new LiteralText("/goml world - prints an overview of claims in the user's world."), false);
+        player.sendMessage(new LiteralText("-------------------------------------"), false);
+        player.sendMessage(new LiteralText("GitHub repository: https://github.com/Draylar/get-off-my-lawn"), false);
 
         return 1;
     }
