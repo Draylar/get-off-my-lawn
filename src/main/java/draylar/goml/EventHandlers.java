@@ -34,7 +34,7 @@ public class EventHandlers {
 
                 if(noPermission) {
                     // TODO: translatable text
-                    playerEntity.addChatMessage(new LiteralText("This entity is protected by a claim."), true);
+                    playerEntity.sendMessage(new LiteralText("This entity is protected by a claim."), true);
 
                     return ActionResult.FAIL;
                 }
@@ -53,7 +53,7 @@ public class EventHandlers {
 
                 if(noPermission) {
                     // TODO: translatable text
-                    playerEntity.addChatMessage(new LiteralText("This entity is protected by a claim."), true);
+                    playerEntity.sendMessage(new LiteralText("This entity is protected by a claim."), true);
 
                     return ActionResult.FAIL;
                 }
@@ -72,7 +72,7 @@ public class EventHandlers {
 
                 if(noPermission) {
                     // TODO: translatable text
-                    playerEntity.addChatMessage(new LiteralText("This block is protected by a claim."), true);
+                    playerEntity.sendMessage(new LiteralText("This block is protected by a claim."), true);
 
                     return ActionResult.FAIL;
                 }
@@ -90,7 +90,7 @@ public class EventHandlers {
 
                 if(noPermission) {
                     // TODO: translatable text
-                    playerEntity.addChatMessage(new LiteralText("This block is protected by a claim."), true);
+                    playerEntity.sendMessage(new LiteralText("This block is protected by a claim."), true);
 
                     return ActionResult.FAIL;
                 }
@@ -109,7 +109,7 @@ public class EventHandlers {
 
                 if(noPermission) {
                     // TODO: translatable text
-                    playerEntity.addChatMessage(new LiteralText("This block is protected by a claim."), true);
+                    playerEntity.sendMessage(new LiteralText("This block is protected by a claim."), true);
 
                     return ActionResult.FAIL;
                 }

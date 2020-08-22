@@ -1,22 +1,19 @@
 plugins {
-	id 'fabric-loom' version '0.2.6-SNAPSHOT'
+	id 'fabric-loom' version '0.4-SNAPSHOT'
 	id 'maven-publish'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-archivesBaseName = project.archives_base_name + "_" + project.minecraft_version
+archivesBaseName = project.archives_base_name + "-" + project.minecraft_version
 version = project.mod_version
 group = project.maven_group
 
 repositories {
 	maven { url "https://maven.jamieswhiteshirt.com/libs-release/" }
 	maven { url = "https://maven.fabricmc.net/" }
-	maven {
-		name = "Onyx Studios"
-		url = "https://maven.onyxstudios.dev"
-	}
+	maven { url = 'https://jitpack.io' }
 }
 
 dependencies {
@@ -29,14 +26,16 @@ dependencies {
 	include "com.jamieswhiteshirt:rtree-3i-lite-fabric:${project.rtree_version}"
 	modCompile "com.jamieswhiteshirt:rtree-3i-lite-fabric:${project.rtree_version}"
 
-	modCompile "io.github.prospector:modmenu:${project.mod_menu_version}"
+	modCompile ("io.github.prospector:modmenu:${project.mod_menu_version}") {
+		exclude group: "net.fabricmc.fabric-api"
+	}
 
 	// CCA for data
-	modImplementation "com.github.NerdHubMC.Cardinal-Components-API:cardinal-components-base:${project.cca_version}"
-	include "com.github.NerdHubMC.Cardinal-Components-API:cardinal-components-base:${project.cca_version}"
+	modImplementation "io.github.OnyxStudios.Cardinal-Components-API:cardinal-components-base:${project.cca_version}"
+	include "io.github.OnyxStudios.Cardinal-Components-API:cardinal-components-base:${project.cca_version}"
 
-	modImplementation "com.github.NerdHubMC.Cardinal-Components-API:cardinal-components-world:${project.cca_version}"
-	include "com.github.NerdHubMC.Cardinal-Components-API:cardinal-components-world:${project.cca_version}"
+	modImplementation "io.github.OnyxStudios.Cardinal-Components-API:cardinal-components-world:${project.cca_version}"
+	include "io.github.OnyxStudios.Cardinal-Components-API:cardinal-components-world:${project.cca_version}"
 }
 
 processResources {

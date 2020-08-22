@@ -13,6 +13,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,6 +25,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import org.spongepowered.asm.mixin.Final;
@@ -50,8 +52,6 @@ public abstract class ExplosionMixin {
 
     @Shadow @Final private double z;
 
-    @Shadow @Final private Explosion.DestructionType blockDestructionType;
-
     @Shadow @Final private float power;
 
     @Shadow @Final private List<BlockPos> affectedBlocks;
@@ -68,6 +68,8 @@ public abstract class ExplosionMixin {
 
     @Shadow public abstract LivingEntity getCausingEntity();
 
+    @Shadow @Final private Explosion.DestructionType destructionType;
+
     @Inject(at = @At("HEAD"), method = "affectWorld", cancellable = true)
     private void affectWorld(boolean bl, CallbackInfo ci) {
         runCustomAffectWorld(bl);
@@ -80,7 +82,7 @@ public abstract class ExplosionMixin {
             this.world.playSound(this.x, this.y, this.z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.world.random.nextFloat() - this.world.random.nextFloat()) * 0.2F) * 0.7F, false);
         }
 
-        boolean bl2 = this.blockDestructionType != Explosion.DestructionType.NONE;
+        boolean bl2 = this.destructionType != Explosion.DestructionType.NONE;
         if (bl) {
             if (this.power >= 2.0F && bl2) {
                 this.world.addParticle(ParticleTypes.EXPLOSION_EMITTER, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
@@ -106,9 +108,9 @@ public abstract class ExplosionMixin {
                         this.world.getProfiler().push("explosion_blocks");
                         if (block.shouldDropItemsOnExplosion(((Explosion) (Object) this)) && this.world instanceof ServerWorld) {
                             BlockEntity blockEntity = block.hasBlockEntity() ? this.world.getBlockEntity(blockPos) : null;
-                            LootContext.Builder builder = (new LootContext.Builder((ServerWorld) this.world)).setRandom(this.world.random).put(LootContextParameters.POSITION, blockPos).put(LootContextParameters.TOOL, ItemStack.EMPTY).putNullable(LootContextParameters.BLOCK_ENTITY, blockEntity).putNullable(LootContextParameters.THIS_ENTITY, entity);
-                            if (this.blockDestructionType == Explosion.DestructionType.DESTROY) {
-                                builder.put(LootContextParameters.EXPLOSION_RADIUS, this.power);
+                            LootContext.Builder builder = (new LootContext.Builder((ServerWorld) this.world)).random(this.world.random).parameter(LootContextParameters.ORIGIN, new Vec3d(blockPos.getX(), blockPos.getY(), blockPos.getZ())).parameter(LootContextParameters.TOOL, ItemStack.EMPTY).optionalParameter(LootContextParameters.BLOCK_ENTITY, blockEntity).optionalParameter(LootContextParameters.THIS_ENTITY, entity);
+                            if (this.destructionType == Explosion.DestructionType.DESTROY) {
+                                builder.parameter(LootContextParameters.EXPLOSION_RADIUS, this.power);
                             }
 
                             blockState.getDroppedStacks(builder).forEach((itemStack) -> {
@@ -136,7 +138,7 @@ public abstract class ExplosionMixin {
 
             while(var11.hasNext()) {
                 BlockPos blockPos3 = (BlockPos)var11.next();
-                if (this.random.nextInt(3) == 0 && this.world.getBlockState(blockPos3).isAir() && this.world.getBlockState(blockPos3.down()).isFullOpaque(this.world, blockPos3.down())) {
+                if (this.random.nextInt(3) == 0 && this.world.getBlockState(blockPos3).isAir() && this.world.getBlockState(blockPos3.down()).isOpaqueFullCube(this.world, blockPos3.down())) {
                     this.world.setBlockState(blockPos3, Blocks.FIRE.getDefaultState());
                 }
             }

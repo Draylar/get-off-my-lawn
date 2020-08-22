@@ -50,7 +50,7 @@ public class BucketItemMixin {
 
             if(noPermission) {
                 // TODO: translatable text
-                user.addChatMessage(new LiteralText("This block is protected by a claim."), true);
+                user.sendMessage(new LiteralText("This block is protected by a claim."), true);
                 cir.setReturnValue(TypedActionResult.fail(user.getStackInHand(hand)));
             }
         }
