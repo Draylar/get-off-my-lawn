@@ -2,6 +2,7 @@ package draylar.goml.block;
 
 import com.jamieswhiteshirt.rtree3i.Box;
 import draylar.goml.GetOffMyLawn;
+import draylar.goml.api.ClaimBox;
 import draylar.goml.api.ClaimInfo;
 import draylar.goml.api.ClaimUtils;
 import net.minecraft.block.Block;
@@ -30,10 +31,7 @@ public class ClaimAnchorBlock extends Block {
 
         if(!world.isClient()) {
             ClaimInfo claimInfo = new ClaimInfo(placer.getUuid(), pos);
-            BlockPos lower = pos.add(-radius, -radius, -radius);
-            BlockPos upper = pos.add(radius, radius, radius);
-
-            GetOffMyLawn.CLAIM.get(world).add(Box.create(lower.getX(), lower.getY(), lower.getZ(), upper.getX(), upper.getY(), upper.getZ()), claimInfo);
+            GetOffMyLawn.CLAIM.get(world).add(new ClaimBox(pos, radius), claimInfo);
             GetOffMyLawn.CLAIM.get(world).sync();
         }
     }

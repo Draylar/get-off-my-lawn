@@ -5,7 +5,9 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "TntEntityMixin",
-    "PistonBlockMixin"
+    "PistonBlockMixin",
+    "ExplosionMixin",
+    "BucketItemMixin"
   ],
   "client": [
     "WorldRendererMixin"

@@ -1,12 +1,12 @@
 plugins {
-	id 'fabric-loom' version '0.4-SNAPSHOT'
+	id 'fabric-loom' version '0.2.6-SNAPSHOT'
 	id 'maven-publish'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-archivesBaseName = project.archives_base_name
+archivesBaseName = project.archives_base_name + "_" + project.minecraft_version
 version = project.mod_version
 group = project.maven_group
 
@@ -17,11 +17,6 @@ repositories {
 		name = "Onyx Studios"
 		url = "https://maven.onyxstudios.dev"
 	}
-	    maven {
-        name = "Ladysnake Libs"
-        url = "https://dl.bintray.com/ladysnake/libs"
-    }
-	maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -37,11 +32,12 @@ dependencies {
 	modCompile "io.github.prospector:modmenu:${project.mod_menu_version}"
 
 	// CCA for data
-	modApi "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${project.cardinal_version}"
-	include "io.github.OnyxStudios.Cardinal-Components-API:cardinal-components-base:${project.cardinal_version}"
+	modImplementation "com.github.NerdHubMC.Cardinal-Components-API:cardinal-components-base:${project.cca_version}"
+	include "com.github.NerdHubMC.Cardinal-Components-API:cardinal-components-base:${project.cca_version}"
 
-	modImplementation "io.github.OnyxStudios.Cardinal-Components-API:cardinal-components-world:${project.cardinal_version}"
-	include "io.github.OnyxStudios.Cardinal-Components-API:cardinal-components-world:${project.cardinal_version}"}
+	modImplementation "com.github.NerdHubMC.Cardinal-Components-API:cardinal-components-world:${project.cca_version}"
+	include "com.github.NerdHubMC.Cardinal-Components-API:cardinal-components-world:${project.cca_version}"
+}
 
 processResources {
 	inputs.property "version", project.version
