@@ -3,8 +3,11 @@ package draylar.goml;
 import draylar.goml.cca.ClaimComponent;
 import draylar.goml.cca.WorldClaimComponent;
 import draylar.goml.command.ClaimCommand;
+import draylar.goml.config.GOMLConfig;
 import draylar.goml.registry.Blocks;
 import draylar.goml.registry.Items;
+import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
+import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
 import nerdhub.cardinal.components.api.ComponentRegistry;
 import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.event.WorldComponentCallback;
@@ -21,6 +24,7 @@ public class GetOffMyLawn implements ModInitializer {
 			ClaimComponent.class
 	).attach(WorldComponentCallback.EVENT, WorldClaimComponent::new);
 
+	public static final GOMLConfig CONFIG = AutoConfig.register(GOMLConfig.class, JanksonConfigSerializer::new).getConfig();
 	public static final ItemGroup GROUP = FabricItemGroupBuilder.build(id("group"), () -> new ItemStack(Items.GOGGLES));
 
 	@Override

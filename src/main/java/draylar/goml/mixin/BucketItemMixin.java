@@ -1,10 +1,9 @@
 package draylar.goml.mixin;
 
-import com.jamieswhiteshirt.rtree3i.Box;
 import com.jamieswhiteshirt.rtree3i.Entry;
 import com.jamieswhiteshirt.rtree3i.Selection;
 import draylar.goml.api.ClaimBox;
-import draylar.goml.api.ClaimInfo;
+import draylar.goml.api.Claim;
 import draylar.goml.api.ClaimUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -19,7 +18,7 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RayTraceContext;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -39,14 +38,14 @@ public class BucketItemMixin {
 
     @Inject(at = @At("HEAD"), method = "use", cancellable = true)
     private void preventBucketUsageInClaims(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
-        HitResult hitResult = rayTrace(world, user, this.fluid == Fluids.EMPTY ? RayTraceContext.FluidHandling.SOURCE_ONLY : RayTraceContext.FluidHandling.NONE);
+        HitResult hitResult = rayTrace(world, user, this.fluid == Fluids.EMPTY ? RaycastContext.FluidHandling.SOURCE_ONLY : RaycastContext.FluidHandling.NONE);
         BlockHitResult blockHitResult = (BlockHitResult) hitResult;
         BlockPos blockPos = blockHitResult.getBlockPos();
 
-        Selection<Entry<ClaimBox, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, blockPos);
+        Selection<Entry<ClaimBox, Claim>> claimsFound = ClaimUtils.getClaimsAt(world, blockPos);
 
         if (!claimsFound.isEmpty()) {
-            boolean noPermission = claimsFound.anyMatch((Entry<ClaimBox, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(user.getUuid()));
+            boolean noPermission = claimsFound.anyMatch((Entry<ClaimBox, Claim> boxInfo) -> !boxInfo.getValue().getOwners().contains(user.getUuid()));
 
             if(noPermission) {
                 // TODO: translatable text
@@ -57,14 +56,14 @@ public class BucketItemMixin {
     }
 
     /**
-     * Copy of protected method {@link net.minecraft.item.Item#rayTrace(World, PlayerEntity, RayTraceContext.FluidHandling)}
+     * Copy of protected method {@link net.minecraft.item.Item#raycast(World, PlayerEntity, RaycastContext.FluidHandling)}
      *
      * @param world  world to ray trace in
      * @param player  player to ray trace from
      * @param fluidHandling  fluid handling
      * @return  {@link HitResult} of raytrace
      */
-    private static HitResult rayTrace(World world, PlayerEntity player, RayTraceContext.FluidHandling fluidHandling) {
+    private static HitResult rayTrace(World world, PlayerEntity player, RaycastContext.FluidHandling fluidHandling) {
         float f = player.pitch;
         float g = player.yaw;
         Vec3d vec3d = player.getCameraPosVec(1.0F);
@@ -75,6 +74,6 @@ public class BucketItemMixin {
         float l = i * j;
         float n = h * j;
         Vec3d vec3d2 = vec3d.add((double)l * 5.0D, (double)k * 5.0D, (double)n * 5.0D);
-        return world.rayTrace(new RayTraceContext(vec3d, vec3d2, RayTraceContext.ShapeType.OUTLINE, fluidHandling, player));
+        return world.raycast(new RaycastContext(vec3d, vec3d2, RaycastContext.ShapeType.OUTLINE, fluidHandling, player));
     }
 }

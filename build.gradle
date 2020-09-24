@@ -14,6 +14,7 @@ repositories {
 	maven { url "https://maven.jamieswhiteshirt.com/libs-release/" }
 	maven { url = "https://maven.fabricmc.net/" }
 	maven { url = 'https://jitpack.io' }
+	jcenter()
 }
 
 dependencies {
@@ -28,6 +29,11 @@ dependencies {
 
 	modCompile ("io.github.prospector:modmenu:${project.mod_menu_version}") {
 		exclude group: "net.fabricmc.fabric-api"
+	}
+
+	include ("me.sargunvohra.mcmods:autoconfig1u:${project.autoconfig_version}")
+	modImplementation ("me.sargunvohra.mcmods:autoconfig1u:${project.autoconfig_version}") {
+		exclude(group: "net.fabricmc.fabric-api")
 	}
 
 	// CCA for data

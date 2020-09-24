@@ -1,23 +1,29 @@
 package draylar.goml.command;
 
-import com.jamieswhiteshirt.rtree3i.Box;
 import com.jamieswhiteshirt.rtree3i.RTreeMap;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import draylar.goml.GetOffMyLawn;
+import draylar.goml.api.Claim;
 import draylar.goml.api.ClaimBox;
-import draylar.goml.api.ClaimInfo;
 import draylar.goml.api.ClaimUtils;
 import net.fabricmc.fabric.api.registry.CommandRegistry;
+import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ClaimCommand {
@@ -28,9 +34,14 @@ public class ClaimCommand {
 
     public static void init() {
         CommandRegistry.INSTANCE.register(false, dispatcher -> {
-            LiteralCommandNode<ServerCommandSource> generalNode = CommandManager
+            LiteralCommandNode<ServerCommandSource> baseNode = CommandManager
                     .literal("goml")
+                    .build();
+
+            LiteralCommandNode<ServerCommandSource> generalNode = CommandManager
+                    .literal("general")
                     .executes(ClaimCommand::general)
+                    .requires(serverCommandSource -> serverCommandSource.hasPermissionLevel(3))
                     .build();
 
             LiteralCommandNode<ServerCommandSource> infoNode = CommandManager
@@ -41,6 +52,7 @@ public class ClaimCommand {
             LiteralCommandNode<ServerCommandSource> worldNode = CommandManager
                     .literal("world")
                     .executes(ClaimCommand::world)
+                    .requires(serverCommandSource -> serverCommandSource.hasPermissionLevel(3))
                     .build();
 
             LiteralCommandNode<ServerCommandSource> removeNode = CommandManager
@@ -55,14 +67,36 @@ public class ClaimCommand {
                     .build();
 
 
+            // User Commands
+            // TODO: -> UI in the future?
+            LiteralCommandNode<ServerCommandSource> trustNode = CommandManager
+                    .literal("trust")
+                        .then(CommandManager.argument("player", EntityArgumentType.player()).executes(context -> trust(context, false)))
+                    .build();
+
+            LiteralCommandNode<ServerCommandSource> addOwnerNode = CommandManager
+                    .literal("addowner")
+                        .then(CommandManager.argument("player", EntityArgumentType.player()).executes(context -> trust(context, true)))
+                    .build();
+
+            LiteralCommandNode<ServerCommandSource> untrustNode = CommandManager
+                    .literal("untrust")
+                    .then(CommandManager.argument("player", EntityArgumentType.player()).executes(ClaimCommand::untrust))
+                    .build();
+
+
             // usage: /goml
-            dispatcher.getRoot().addChild(generalNode);
+            dispatcher.getRoot().addChild(baseNode);
 
             // usage: /goml [info|world|remove|help]
-            generalNode.addChild(infoNode);
-            generalNode.addChild(worldNode);
-            generalNode.addChild(removeNode);
-            generalNode.addChild(helpNode);
+            baseNode.addChild(generalNode);
+            baseNode.addChild(infoNode);
+            baseNode.addChild(worldNode);
+            baseNode.addChild(removeNode);
+            baseNode.addChild(helpNode);
+            baseNode.addChild(trustNode);
+            baseNode.addChild(untrustNode);
+            baseNode.addChild(addOwnerNode);
         });
     }
 
@@ -77,27 +111,17 @@ public class ClaimCommand {
         ServerPlayerEntity player = context.getSource().getPlayer();
         AtomicInteger numberOfClaimsTotal = new AtomicInteger();
 
+        bumpChat(player);
+
         server.getWorlds().forEach(world -> {
-            RTreeMap<ClaimBox, ClaimInfo> worldClaims = GetOffMyLawn.CLAIM.get(world).getClaims();
+            RTreeMap<ClaimBox, Claim> worldClaims = GetOffMyLawn.CLAIM.get(world).getClaims();
             int numberOfClaimsWorld = worldClaims.size();
             numberOfClaimsTotal.addAndGet(1);
 
-            // TODO: translatable text
-           player
-                    .sendMessage(new LiteralText(
-                            new LiteralText("[GOML] ").formatted(Formatting.BLUE).asString() +
-                                    "Number of claims in " + world.getDimension().toString() + ": " + numberOfClaimsWorld),
-                            false
-                    );
+            player.sendMessage(prefix(new TranslatableText("goml.number_in", world.getRegistryKey().getValue(), numberOfClaimsWorld)), false);
         });
 
-        // TODO: translatable text
-        player
-                .sendMessage(new LiteralText(
-                        new LiteralText("[GOML] ").formatted(Formatting.BLUE).asString() +
-                                "Number of claims across all worlds: " + numberOfClaimsTotal.get()),
-                        false
-                );
+        player.sendMessage(prefix(new TranslatableText("goml.number_all", numberOfClaimsTotal.get()).formatted(Formatting.WHITE)), false);
 
         return 1;
     }
@@ -114,12 +138,10 @@ public class ClaimCommand {
 
         if(!world.isClient()) {
             ClaimUtils.getClaimsAt(world, player.getBlockPos()).forEach(claimedArea -> {
-                // TODO: translatable text
-                // TODO: UUID -> Player name
-                player.sendMessage(new LiteralText(
-                        new LiteralText("[GOML] ").formatted(Formatting.BLUE).asString() +
-                        "Claim owner: " + claimedArea.getValue().getOwner()
-                ), false);
+                LiteralText owners = new LiteralText("Owners: " + Arrays.toString(claimedArea.getValue().getOwners().toArray()));
+                LiteralText trusted = new LiteralText("Trusted: " + Arrays.toString(claimedArea.getValue().getTrusted().toArray()));
+                player.sendMessage(prefix(owners), false);
+                player.sendMessage(prefix(trusted), false);
             });
         }
 
@@ -136,16 +158,10 @@ public class ClaimCommand {
         ServerWorld world = context.getSource().getWorld();
         ServerPlayerEntity player = context.getSource().getPlayer();
 
-        RTreeMap<ClaimBox, ClaimInfo> worldClaims = GetOffMyLawn.CLAIM.get(world).getClaims();
+        RTreeMap<ClaimBox, Claim> worldClaims = GetOffMyLawn.CLAIM.get(world).getClaims();
         int numberOfClaims = worldClaims.size();
 
-        // TODO: translatable text
-        player
-                .sendMessage(new LiteralText(
-                        new LiteralText("[GOML] ").formatted(Formatting.BLUE).asString() +
-                                "Number of claims in " + world.getDimension().toString() + ": " + numberOfClaims),
-                        false
-                );
+        player.sendMessage(prefix(new TranslatableText("goml.number_in", world.getRegistryKey().getValue(), numberOfClaims)), false);
 
         return 1;
     }
@@ -160,18 +176,10 @@ public class ClaimCommand {
         ServerWorld world = context.getSource().getWorld();
         ServerPlayerEntity player = context.getSource().getPlayer();
 
-
-
         if(!world.isClient()) {
             ClaimUtils.getClaimsAt(world, player.getBlockPos()).forEach(claimedArea -> {
                 GetOffMyLawn.CLAIM.get(world).remove(claimedArea.getKey());
-
-                // TODO: translatable text
-                player.sendMessage(new LiteralText(
-                        new LiteralText("[GOML] ").formatted(Formatting.BLUE).asString() +
-                                "Removed claim in " + world.getDimension().toString() + " with origin of " + claimedArea.getValue().getOrigin() + "."),
-                        false
-                );
+                player.sendMessage(prefix(new TranslatableText("goml.removed_claim", world.getRegistryKey().getValue(), claimedArea.getValue().getOrigin())), false);
             });
         }
 
@@ -190,14 +198,84 @@ public class ClaimCommand {
         // TODO: translatable text
         player.sendMessage(new LiteralText("[Get Off My Lawn Help] ").formatted(Formatting.BLUE), false);
         player.sendMessage(new LiteralText("-------------------------------------").formatted(Formatting.BLUE), false);
-        player.sendMessage(new LiteralText("/goml - prints an overview of all claims across all worlds."), false);
+        player.sendMessage(new LiteralText("/goml - base command."), false);
+        player.sendMessage(new LiteralText("/goml general - prints the status of all claims on the server."), false);
         player.sendMessage(new LiteralText("/goml help - prints this message."), false);
         player.sendMessage(new LiteralText("/goml info - prints information about any claims at the user's position."), false);
         player.sendMessage(new LiteralText("/goml remove - removes any claims at the user's position."), false);
         player.sendMessage(new LiteralText("/goml world - prints an overview of claims in the user's world."), false);
+        player.sendMessage(new LiteralText("/goml addowner - adds an owner to the current claim."), false);
+        player.sendMessage(new LiteralText("/goml trust - adds a trusted member to the current claim."), false);
+        player.sendMessage(new LiteralText("/goml untrust - removes a trusted member from the current claim."), false);
         player.sendMessage(new LiteralText("-------------------------------------").formatted(Formatting.BLUE), false);
         player.sendMessage(new LiteralText("GitHub repository: https://github.com/Draylar/get-off-my-lawn"), false);
 
         return 1;
+    }
+
+    private static int trust(CommandContext<ServerCommandSource> context, boolean owner) throws CommandSyntaxException {
+        ServerWorld world = context.getSource().getWorld();
+        ServerPlayerEntity player = context.getSource().getPlayer();
+        ServerPlayerEntity toAdd = EntityArgumentType.getPlayer(context, "player");
+
+        // Owner/trusted tried to add them self to the claim
+        if(toAdd.getUuid().equals(player.getUuid())) {
+            player.sendMessage(new TranslatableText("goml.add_self"), true);
+            return 1;
+        }
+
+        if(!world.isClient()) {
+            ClaimUtils.getClaimsAt(world, player.getBlockPos()).forEach(claimedArea -> {
+                if(claimedArea.getValue().isOwner(player)) {
+                    if(owner) {
+                        claimedArea.getValue().addOwner(toAdd);
+                        player.sendMessage(prefix(new TranslatableText("goml.owner_added", toAdd.getDisplayName())), false);
+                    } else {
+                        claimedArea.getValue().trust(toAdd);
+                        player.sendMessage(prefix(new TranslatableText("goml.trusted", toAdd.getDisplayName())), false);
+                    }
+
+                    GetOffMyLawn.CLAIM.get(player.world).sync();
+                }
+            });
+        }
+
+        return 1;
+    }
+
+    private static int untrust(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ServerWorld world = context.getSource().getWorld();
+        ServerPlayerEntity player = context.getSource().getPlayer();
+        ServerPlayerEntity toRemove = EntityArgumentType.getPlayer(context, "player");
+
+        // Owner/trusted tried to remove themselves from the claim
+        if(toRemove.getUuid().equals(player.getUuid())) {
+            player.sendMessage(new TranslatableText("goml.remove_self"), true);
+            return 1;
+        }
+
+        if(!world.isClient()) {
+            ClaimUtils.getClaimsAt(world, player.getBlockPos()).forEach(claimedArea -> {
+                if(claimedArea.getValue().isOwner(player)) {
+                    claimedArea.getValue().untrust(toRemove);
+                    player.sendMessage(prefix(new TranslatableText("goml.untrusted", toRemove.getDisplayName())), false);
+                    GetOffMyLawn.CLAIM.get(player.world).sync();
+                }
+            });
+        }
+
+        return 1;
+    }
+
+    private static void bumpChat(ServerPlayerEntity player) {
+        player.sendMessage(new LiteralText(" "), false);
+    }
+
+    private static MutableText createPrefix() {
+        return new TranslatableText("goml.prefix").formatted(Formatting.BLUE);
+    }
+
+    private static MutableText prefix(MutableText text) {
+        return createPrefix().append(new LiteralText(" ")).append(text).formatted(Formatting.WHITE);
     }
 }

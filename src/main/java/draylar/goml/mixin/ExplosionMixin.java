@@ -1,11 +1,10 @@
 package draylar.goml.mixin;
 
-import com.jamieswhiteshirt.rtree3i.Box;
 import com.jamieswhiteshirt.rtree3i.Entry;
 import com.jamieswhiteshirt.rtree3i.Selection;
 import com.mojang.datafixers.util.Pair;
 import draylar.goml.api.ClaimBox;
-import draylar.goml.api.ClaimInfo;
+import draylar.goml.api.Claim;
 import draylar.goml.api.ClaimUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
@@ -13,7 +12,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -148,10 +146,10 @@ public abstract class ExplosionMixin {
     @Unique
     private boolean isValid(BlockPos blockPos) {
         if(getCausingEntity() instanceof PlayerEntity) {
-            Selection<Entry<ClaimBox, ClaimInfo>> claimsFound = ClaimUtils.getClaimsAt(world, blockPos);
+            Selection<Entry<ClaimBox, Claim>> claimsFound = ClaimUtils.getClaimsAt(world, blockPos);
 
             if (!claimsFound.isEmpty()) {
-                return !claimsFound.anyMatch((Entry<ClaimBox, ClaimInfo> boxInfo) -> !boxInfo.getValue().getOwner().equals(getCausingEntity().getUuid()));
+                return !claimsFound.anyMatch((Entry<ClaimBox, Claim> boxInfo) -> !boxInfo.getValue().getOwners().contains(getCausingEntity().getUuid()));
             }
         }
 

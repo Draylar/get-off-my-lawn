@@ -1,9 +1,8 @@
 package draylar.goml.block;
 
-import com.jamieswhiteshirt.rtree3i.Box;
 import draylar.goml.GetOffMyLawn;
 import draylar.goml.api.ClaimBox;
-import draylar.goml.api.ClaimInfo;
+import draylar.goml.api.Claim;
 import draylar.goml.api.ClaimUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -13,6 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
+
+import java.util.Collections;
 
 public class ClaimAnchorBlock extends Block {
 
@@ -30,7 +31,7 @@ public class ClaimAnchorBlock extends Block {
         }
 
         if(!world.isClient()) {
-            ClaimInfo claimInfo = new ClaimInfo(placer.getUuid(), pos);
+            Claim claimInfo = new Claim(Collections.singleton(placer.getUuid()), pos);
             GetOffMyLawn.CLAIM.get(world).add(new ClaimBox(pos, radius), claimInfo);
             GetOffMyLawn.CLAIM.get(world).sync();
         }
@@ -54,12 +55,19 @@ public class ClaimAnchorBlock extends Block {
     }
 
     @Override
-    public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-        if(world == null) {
+    public boolean canPlaceAt(BlockState state, WorldView worldView, BlockPos pos) {
+        if(worldView == null) {
             return true;
         }
 
-        return ClaimUtils.getClaimsInBox(world, pos.add(-radius, -radius, -radius), pos.add(radius, radius, radius)).isEmpty();
+        if(worldView instanceof World) {
+            World world = (World) worldView;
+            if (GetOffMyLawn.CONFIG.dimensionBlacklist.contains(world.getRegistryKey().getValue().toString())) {
+                return false;
+            }
+        }
+
+        return ClaimUtils.getClaimsInBox(worldView, pos.add(-radius, -radius, -radius), pos.add(radius, radius, radius)).isEmpty();
     }
 
     public int getRadius() {

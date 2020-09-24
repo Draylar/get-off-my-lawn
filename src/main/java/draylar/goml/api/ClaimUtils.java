@@ -8,8 +8,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldView;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 public class ClaimUtils {
 
     /**
@@ -21,7 +19,7 @@ public class ClaimUtils {
      * @param pos  position to check at
      * @return  claims at the given position in the given world
      */
-    public static Selection<Entry<ClaimBox, ClaimInfo>> getClaimsAt(WorldView world, BlockPos pos) {
+    public static Selection<Entry<ClaimBox, Claim>> getClaimsAt(WorldView world, BlockPos pos) {
         Box checkBox = Box.create(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
         return GetOffMyLawn.CLAIM.get(world).getClaims().entries(box -> box.contains(checkBox));
     }
@@ -34,7 +32,7 @@ public class ClaimUtils {
      * @param upper  upper corner of claim
      * @return  claims that intersect with a box created by the 2 positions in the given world
      */
-    public static Selection<Entry<ClaimBox, ClaimInfo>> getClaimsInBox(WorldView world, BlockPos lower, BlockPos upper) {
+    public static Selection<Entry<ClaimBox, Claim>> getClaimsInBox(WorldView world, BlockPos lower, BlockPos upper) {
         Box checkBox = Box.create(lower.getX(), lower.getY(), lower.getZ(), upper.getX(), upper.getY(), upper.getZ());
         return GetOffMyLawn.CLAIM.get(world).getClaims().entries(box -> box.intersectsClosed(checkBox));
     }
@@ -49,7 +47,7 @@ public class ClaimUtils {
      * @param ignore  box to ignore
      * @return  claims that intersect with a box created by the 2 positions in the given world
      */
-    public static Selection<Entry<ClaimBox, ClaimInfo>> getClaimsInBox(WorldView world, BlockPos lower, BlockPos upper, Box ignore) {
+    public static Selection<Entry<ClaimBox, Claim>> getClaimsInBox(WorldView world, BlockPos lower, BlockPos upper, Box ignore) {
         Box checkBox = Box.create(lower.getX(), lower.getY(), lower.getZ(), upper.getX(), upper.getY(), upper.getZ());
         return GetOffMyLawn.CLAIM.get(world).getClaims().entries(box -> box.intersectsClosed(checkBox) && !box.equals(ignore));
     }
@@ -62,7 +60,7 @@ public class ClaimUtils {
      * @param checkPos  position to check against
      * @return  whether or not the claim information matches up with the player and position
      */
-    public static boolean claimMatchesWith(Entry<ClaimBox, ClaimInfo> claim, PlayerEntity checkPlayer, BlockPos checkPos) {
+    public static boolean claimMatchesWith(Entry<ClaimBox, Claim> claim, PlayerEntity checkPlayer, BlockPos checkPos) {
         return playerHasPermission(claim, checkPlayer) && claim.getValue().getOrigin().equals(checkPos);
     }
 
@@ -73,7 +71,7 @@ public class ClaimUtils {
      * @param checkPlayer  player to check
      * @return  whether the checkPlayer can build/interact in the claim
      */
-    public static boolean playerHasPermission(Entry<ClaimBox, ClaimInfo> claim, PlayerEntity checkPlayer) {
-        return claim.getValue().getOwner().equals(checkPlayer.getUuid());
+    public static boolean playerHasPermission(Entry<ClaimBox, Claim> claim, PlayerEntity checkPlayer) {
+        return claim.getValue().getOwners().contains(checkPlayer.getUuid());
     }
 }

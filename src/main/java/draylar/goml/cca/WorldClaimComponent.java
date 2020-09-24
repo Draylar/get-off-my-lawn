@@ -4,7 +4,7 @@ import com.jamieswhiteshirt.rtree3i.ConfigurationBuilder;
 import com.jamieswhiteshirt.rtree3i.RTreeMap;
 import draylar.goml.GetOffMyLawn;
 import draylar.goml.api.ClaimBox;
-import draylar.goml.api.ClaimInfo;
+import draylar.goml.api.Claim;
 import nerdhub.cardinal.components.api.ComponentType;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.CompoundTag;
@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 
 public class WorldClaimComponent implements ClaimComponent {
 
-    private RTreeMap<ClaimBox, ClaimInfo> claims = RTreeMap.create(new ConfigurationBuilder().star().build(), ClaimBox::toBox);
+    private RTreeMap<ClaimBox, Claim> claims = RTreeMap.create(new ConfigurationBuilder().star().build(), ClaimBox::toBox);
     private final World world;
 
     public WorldClaimComponent(World world) {
@@ -22,12 +22,12 @@ public class WorldClaimComponent implements ClaimComponent {
     }
 
     @Override
-    public RTreeMap<ClaimBox, ClaimInfo> getClaims() {
+    public RTreeMap<ClaimBox, Claim> getClaims() {
         return claims;
     }
 
     @Override
-    public void add(ClaimBox box, ClaimInfo info) {
+    public void add(ClaimBox box, Claim info) {
         this.claims = this.claims.put(box, info);
         sync();
     }
@@ -47,7 +47,7 @@ public class WorldClaimComponent implements ClaimComponent {
         listTag.forEach(child -> {
             CompoundTag childCompound = (CompoundTag) child;
             ClaimBox box = boxFromTag((CompoundTag) childCompound.get("Box"));
-            ClaimInfo claimInfo = ClaimInfo.fromTag((CompoundTag) childCompound.get("Info"));
+            Claim claimInfo = Claim.fromTag((CompoundTag) childCompound.get("Info"));
             add(box, claimInfo);
         });
     }
