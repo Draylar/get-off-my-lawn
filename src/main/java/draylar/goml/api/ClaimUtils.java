@@ -72,6 +72,6 @@ public class ClaimUtils {
      * @return  whether the checkPlayer can build/interact in the claim
      */
     public static boolean playerHasPermission(Entry<ClaimBox, Claim> claim, PlayerEntity checkPlayer) {
-        return claim.getValue().getOwners().contains(checkPlayer.getUuid());
+        return claim.getValue().getOwners().contains(checkPlayer.getUuid()) || checkPlayer.hasPermissionLevel(3);
     }
 }

@@ -7,7 +7,10 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Represents a claim on land with an origin {@link BlockPos}, owners, and other allowed players.
