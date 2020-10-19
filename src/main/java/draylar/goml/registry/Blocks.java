@@ -14,12 +14,12 @@ import net.minecraft.util.registry.Registry;
 
 public class Blocks {
 
-    public static final Pair<ClaimAnchorBlock, Item> MAKESHIFT_CLAIM_ANCHOR = register("makeshift_claim_anchor", 10, 10, FabricToolTags.AXES);
-    public static final Pair<ClaimAnchorBlock, Item> REINFORCED_CLAIM_ANCHOR = register("reinforced_claim_anchor", 25, 10, FabricToolTags.PICKAXES);
-    public static final Pair<ClaimAnchorBlock, Item> GLISTENING_CLAIM_ANCHOR = register("glistening_claim_anchor", 50, 15, FabricToolTags.PICKAXES);
-    public static final Pair<ClaimAnchorBlock, Item> CRYSTAL_CLAIM_ANCHOR = register("crystal_claim_anchor", 75, 20, FabricToolTags.PICKAXES);
-    public static final Pair<ClaimAnchorBlock, Item> EMERADIC_CLAIM_ANCHOR = register("emeradic_claim_anchor", 125, 20, FabricToolTags.PICKAXES);
-    public static final Pair<ClaimAnchorBlock, Item> WITHERED_CLAIM_ANCHOR = register("withered_claim_anchor", 200, 25, FabricToolTags.PICKAXES);
+    public static final Pair<ClaimAnchorBlock, Item> MAKESHIFT_CLAIM_ANCHOR = register("makeshift_claim_anchor", GetOffMyLawn.CONFIG.makeshiftRadius, 10, FabricToolTags.AXES);
+    public static final Pair<ClaimAnchorBlock, Item> REINFORCED_CLAIM_ANCHOR = register("reinforced_claim_anchor", GetOffMyLawn.CONFIG.reinforcedRadius, 10, FabricToolTags.PICKAXES);
+    public static final Pair<ClaimAnchorBlock, Item> GLISTENING_CLAIM_ANCHOR = register("glistening_claim_anchor", GetOffMyLawn.CONFIG.glisteningRadius, 15, FabricToolTags.PICKAXES);
+    public static final Pair<ClaimAnchorBlock, Item> CRYSTAL_CLAIM_ANCHOR = register("crystal_claim_anchor", GetOffMyLawn.CONFIG.crystalRadius, 20, FabricToolTags.PICKAXES);
+    public static final Pair<ClaimAnchorBlock, Item> EMERADIC_CLAIM_ANCHOR = register("emeradic_claim_anchor", GetOffMyLawn.CONFIG.emeradicRadius, 20, FabricToolTags.PICKAXES);
+    public static final Pair<ClaimAnchorBlock, Item> WITHERED_CLAIM_ANCHOR = register("withered_claim_anchor", GetOffMyLawn.CONFIG.witheredRadius, 25, FabricToolTags.PICKAXES);
 
 
     private static Pair<ClaimAnchorBlock, Item> register(String name, int radius, float hardness, Tag<Item> toolTag) {
