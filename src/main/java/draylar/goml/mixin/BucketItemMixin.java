@@ -45,7 +45,7 @@ public class BucketItemMixin {
         Selection<Entry<ClaimBox, Claim>> claimsFound = ClaimUtils.getClaimsAt(world, blockPos);
 
         if (!claimsFound.isEmpty()) {
-            boolean noPermission = claimsFound.anyMatch((Entry<ClaimBox, Claim> boxInfo) -> !boxInfo.getValue().getOwners().contains(user.getUuid()));
+            boolean noPermission = claimsFound.anyMatch((Entry<ClaimBox, Claim> boxInfo) -> !boxInfo.getValue().hasPermission(user));
 
             if(noPermission) {
                 // TODO: translatable text
