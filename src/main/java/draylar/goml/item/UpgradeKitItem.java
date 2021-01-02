@@ -99,6 +99,6 @@ public class UpgradeKitItem extends Item {
             return;
         }
 
-        tooltip.add(new LiteralText(new TranslatableText(from.getTranslationKey()).asString() + " -> " + new TranslatableText(to.getTranslationKey()).asString()).formatted(Formatting.GRAY));
+        tooltip.add(new TranslatableText(from.getTranslationKey()).append(" -> ").append(new TranslatableText(to.getTranslationKey())).formatted(Formatting.GRAY));
     }
 }

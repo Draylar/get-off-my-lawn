@@ -4,10 +4,12 @@
   "package": "draylar.goml.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "TntEntityMixin",
-    "PistonBlockMixin",
+    "BucketItemMixin",
     "ExplosionMixin",
-    "BucketItemMixin"
+    "PistonBlockMixin",
+    "TntEntityMixin",
+    "augment.EndermanEntityMixin",
+    "augment.VillagerEntityMixin"
   ],
   "client": [
     "WorldRendererMixin"

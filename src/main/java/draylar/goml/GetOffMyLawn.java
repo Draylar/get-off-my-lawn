@@ -5,6 +5,7 @@ import draylar.goml.cca.WorldClaimComponent;
 import draylar.goml.command.ClaimCommand;
 import draylar.goml.config.GOMLConfig;
 import draylar.goml.registry.Blocks;
+import draylar.goml.registry.Entities;
 import draylar.goml.registry.Items;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
@@ -16,6 +17,8 @@ import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class GetOffMyLawn implements ModInitializer {
 
@@ -26,11 +29,13 @@ public class GetOffMyLawn implements ModInitializer {
 
 	public static final GOMLConfig CONFIG = AutoConfig.register(GOMLConfig.class, JanksonConfigSerializer::new).getConfig();
 	public static final ItemGroup GROUP = FabricItemGroupBuilder.build(id("group"), () -> new ItemStack(Items.GOGGLES));
+	public static final Logger LOGGER = LogManager.getLogger();
 
 	@Override
 	public void onInitialize() {
 		Blocks.init();
 		Items.init();
+		Entities.init();
 		EventHandlers.init();
 		ClaimCommand.init();
 	}
