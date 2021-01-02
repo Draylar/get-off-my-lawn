@@ -4,18 +4,22 @@ import draylar.goml.GetOffMyLawn;
 import draylar.goml.api.ClaimBox;
 import draylar.goml.api.Claim;
 import draylar.goml.api.ClaimUtils;
+import draylar.goml.entity.ClaimAnchorBlockEntity;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 
 import java.util.Collections;
 
-public class ClaimAnchorBlock extends Block {
+public class ClaimAnchorBlock extends Block implements BlockEntityProvider {
 
     private final int radius;
 
@@ -34,7 +38,16 @@ public class ClaimAnchorBlock extends Block {
             Claim claimInfo = new Claim(Collections.singleton(placer.getUuid()), pos);
             GetOffMyLawn.CLAIM.get(world).add(new ClaimBox(pos, radius), claimInfo);
             GetOffMyLawn.CLAIM.get(world).sync();
+
+            // Assign claim to BE
+            BlockEntity be = world.getBlockEntity(pos);
+            if(be instanceof ClaimAnchorBlockEntity) {
+                ClaimAnchorBlockEntity anchorBE = (ClaimAnchorBlockEntity) be;
+                anchorBE.setClaim(claimInfo);
+            }
         }
+
+        super.onPlaced(world, pos, state, placer, itemStack);
     }
 
     @Override
@@ -72,5 +85,10 @@ public class ClaimAnchorBlock extends Block {
 
     public int getRadius() {
         return radius;
+    }
+
+    @Override
+    public BlockEntity createBlockEntity(BlockView world) {
+        return new ClaimAnchorBlockEntity();
     }
 }

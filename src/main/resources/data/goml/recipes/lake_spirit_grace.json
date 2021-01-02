@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#P#",
+    "PHP",
+    "#P#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:prismarine_bricks"
+    },
+    "P": {
+      "item": "minecraft:prismarine_shard"
+    },
+    "H": {
+      "item": "minecraft:heart_of_the_sea"
+    }
+  },
+  "result": {
+    "item": "goml:lake_spirit_grace",
+    "count": 1
+  }
+}
