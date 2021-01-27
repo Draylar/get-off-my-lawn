@@ -14,6 +14,10 @@ repositories {
 	maven { url "https://maven.jamieswhiteshirt.com/libs-release/" }
 	maven { url = "https://maven.fabricmc.net/" }
 	maven { url = 'https://jitpack.io' }
+	maven {
+		name = "Ladysnake Libs"
+		url = "https://dl.bintray.com/ladysnake/libs"
+	}
 	jcenter()
 }
 
@@ -42,6 +46,10 @@ dependencies {
 
 	modImplementation "io.github.OnyxStudios.Cardinal-Components-API:cardinal-components-world:${project.cca_version}"
 	include "io.github.OnyxStudios.Cardinal-Components-API:cardinal-components-world:${project.cca_version}"
+
+	// Flight
+	modImplementation "io.github.ladysnake:PlayerAbilityLib:${pal_version}"
+	include "io.github.ladysnake:PlayerAbilityLib:${pal_version}"
 }
 
 processResources {

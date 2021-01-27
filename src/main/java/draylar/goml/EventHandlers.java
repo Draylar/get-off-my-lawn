@@ -5,10 +5,15 @@ import com.jamieswhiteshirt.rtree3i.Selection;
 import draylar.goml.api.Claim;
 import draylar.goml.api.ClaimBox;
 import draylar.goml.api.ClaimUtils;
+import draylar.goml.block.ClaimAnchorBlock;
+import draylar.goml.entity.ClaimAnchorBlockEntity;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.minecraft.block.ChestBlock;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
@@ -28,6 +33,7 @@ public class EventHandlers {
         registerInteractBlockCallback();
         registerAttackEntityCallback();
         registerInteractEntityCallback();
+        registerAnchorAttackCallback();
     }
 
     private static void registerInteractEntityCallback() {
@@ -61,6 +67,22 @@ public class EventHandlers {
         AttackBlockCallback.EVENT.register((playerEntity, world, hand, blockPos, direction) -> {
             Selection<Entry<ClaimBox, Claim>> claimsFound = ClaimUtils.getClaimsAt(world, blockPos);
             return testPermission(claimsFound, playerEntity, BLOCK_PROTECTED);
+        });
+    }
+
+    private static void registerAnchorAttackCallback() {
+        AttackBlockCallback.EVENT.register((playerEntity, world, hand, blockPos, direction) -> {
+            if(world.getBlockState(blockPos).getBlock() instanceof ClaimAnchorBlock) {
+                BlockEntity be = world.getBlockEntity(blockPos);
+
+                if(be instanceof ClaimAnchorBlockEntity) {
+                    if(((ClaimAnchorBlockEntity) be).hasAugment()) {
+                        return ActionResult.FAIL;
+                    }
+                }
+            }
+
+            return ActionResult.PASS;
         });
     }
 

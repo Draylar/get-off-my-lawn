@@ -7,6 +7,7 @@ import draylar.goml.config.GOMLConfig;
 import draylar.goml.registry.Blocks;
 import draylar.goml.registry.Entities;
 import draylar.goml.registry.Items;
+import io.github.ladysnake.pal.AbilitySource;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
 import nerdhub.cardinal.components.api.ComponentRegistry;

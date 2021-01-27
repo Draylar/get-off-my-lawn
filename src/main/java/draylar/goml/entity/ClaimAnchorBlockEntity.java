@@ -32,9 +32,8 @@ public class ClaimAnchorBlockEntity extends BlockEntity implements Tickable {
 
     private final Map<BlockPos, ClaimAugmentBlockEntity> augmentEntities = new HashMap<>();
     private final List<BlockPos> loadPositions = new ArrayList<>();
+    private final List<PlayerEntity> previousTickPlayers = new ArrayList<>();
     private Claim claim;
-    private boolean dirty = false;
-    private Map<ClaimAugmentBlock, Boolean> cachedAugments = new HashMap<>();
 
     public ClaimAnchorBlockEntity() {
         super(Entities.CLAIM_ANCHOR);
@@ -65,12 +64,10 @@ public class ClaimAnchorBlockEntity extends BlockEntity implements Tickable {
 
     public void addChild(BlockPos pos, ClaimAugmentBlockEntity augment) {
         augmentEntities.put(pos, augment);
-        dirty = true;
     }
 
     public void removeChild(BlockPos pos) {
         augmentEntities.remove(pos);
-        dirty = true;
     }
 
     public void setClaim(Claim claim) {
@@ -124,38 +121,43 @@ public class ClaimAnchorBlockEntity extends BlockEntity implements Tickable {
                     augment.tick(claim, world, augmentBE);
                     playersInClaim.forEach(augment::playerTick);
                 }
+
+                // Enter/Exit behavior
+                playersInClaim.forEach(player -> {
+                    // this player was NOT in the claim last tick, call entry method
+                    if(!previousTickPlayers.contains(player)) {
+                        augment.onPlayerEnter(claim, player);
+                    }
+                });
+
+                // Tick exit behavior
+                previousTickPlayers.stream().filter(player -> !playersInClaim.contains(player)).forEach(player -> {
+                    augment.onPlayerExit(claim, player);
+                });
             }
         });
+
+        // Reset players in claim
+        previousTickPlayers.clear();
+        previousTickPlayers.addAll(playersInClaim);
     }
 
     public boolean hasAugment(ClaimAugmentBlock augment) {
         assert world != null;
 
-        // Claim Anchor has been updated, can't trust cached values. Recalculate now.
-        if(dirty) {
-            cachedAugments.clear();
-            dirty = false;
-        }
-
-        // Claim Anchor has not been updated, we can trust cached values (or store)
-        else {
-            if(cachedAugments.containsKey(augment)) {
-                return true;
-            }
-        }
-
-        // Value wasn't cached, store result of following check
-        boolean has = false;
         for (Map.Entry<BlockPos, ClaimAugmentBlockEntity> entry : augmentEntities.entrySet()) {
             BlockPos position = entry.getKey();
             ClaimAugmentBlock block = (ClaimAugmentBlock) world.getBlockState(position).getBlock();
 
             if (block.equals(augment)) {
-                has = true;
-                cachedAugments.put(block, true);
+                return true;
             }
         }
 
-        return has;
+        return false;
+    }
+
+    public boolean hasAugment() {
+        return augmentEntities.size() > 0;
     }
 }
