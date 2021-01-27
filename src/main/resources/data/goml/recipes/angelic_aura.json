@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "iEi",
+    "EiE",
+    "iEi"
+  ],
+  "key": {
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "E": {
+      "item": "minecraft:ghast_tear"
+    }
+  },
+  "result": {
+    "item": "goml:angelic_aura",
+    "count": 1
+  }
+}
