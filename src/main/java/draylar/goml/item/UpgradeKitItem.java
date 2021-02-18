@@ -79,11 +79,14 @@ public class UpgradeKitItem extends Item {
                         // set block
                         world.setBlockState(pos, to.getDefaultState());
 
-                        // TODO: sync old owners/settings
-
                         // new claim
                         Claim claimInfo = new Claim(Collections.singleton(context.getPlayer().getUuid()), pos);
                         GetOffMyLawn.CLAIM.get(world).add(new ClaimBox(pos, to.getRadius()), claimInfo);
+
+                        // decrement stack
+                        if(!context.getPlayer().isCreative() && !context.getPlayer().isSpectator()) {
+                            context.getStack().decrement(1);
+                        }
                     }
                 }
             }

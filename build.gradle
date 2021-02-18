@@ -50,6 +50,8 @@ dependencies {
 	// Flight
 	modImplementation "io.github.ladysnake:PlayerAbilityLib:${pal_version}"
 	include "io.github.ladysnake:PlayerAbilityLib:${pal_version}"
+
+	modImplementation 'com.github.TheRandomLabs:VanillaDeathChest:1.16-fabric-SNAPSHOT'
 }
 
 processResources {

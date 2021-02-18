@@ -1,5 +1,6 @@
 package draylar.goml;
 
+import draylar.goml.api.compat.DeathChestsCompat;
 import draylar.goml.cca.ClaimComponent;
 import draylar.goml.cca.WorldClaimComponent;
 import draylar.goml.command.ClaimCommand;
@@ -15,6 +16,7 @@ import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.event.WorldComponentCallback;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -39,6 +41,11 @@ public class GetOffMyLawn implements ModInitializer {
 		Entities.init();
 		EventHandlers.init();
 		ClaimCommand.init();
+
+		// Register compat hooks
+		if(FabricLoader.getInstance().isModLoaded("vanilladeathchest")) {
+			DeathChestsCompat.register();
+		}
 	}
 
 	public static Identifier id(String name) {
