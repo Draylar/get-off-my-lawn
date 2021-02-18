@@ -41,14 +41,14 @@ public class EventHandlers {
     private static void registerInteractEntityCallback() {
         UseEntityCallback.EVENT.register((playerEntity, world, hand, entity, entityHitResult) -> {
             Selection<Entry<ClaimBox, Claim>> claimsFound = ClaimUtils.getClaimsAt(world, entity.getBlockPos());
-            return testPermission(claimsFound, playerEntity, hand, new BlockPos(entityHitResult.getPos()), PermissionReason.ENTITY_PROTECTED);
+            return testPermission(claimsFound, playerEntity, hand, entity.getBlockPos(), PermissionReason.ENTITY_PROTECTED);
         });
     }
 
     private static void registerAttackEntityCallback() {
         AttackEntityCallback.EVENT.register((playerEntity, world, hand, entity, entityHitResult) -> {
             Selection<Entry<ClaimBox, Claim>> claimsFound = ClaimUtils.getClaimsAt(world, entity.getBlockPos());
-            return testPermission(claimsFound, playerEntity, hand, new BlockPos(entityHitResult.getPos()), PermissionReason.ENTITY_PROTECTED);
+            return testPermission(claimsFound, playerEntity, hand, entity.getBlockPos(), PermissionReason.ENTITY_PROTECTED);
         });
     }
 
