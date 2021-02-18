@@ -160,4 +160,17 @@ public class ClaimAnchorBlockEntity extends BlockEntity implements Tickable {
     public boolean hasAugment() {
         return augmentEntities.size() > 0;
     }
+
+    public Map<BlockPos, ClaimAugmentBlockEntity> getAugmentEntities() {
+        return augmentEntities;
+    }
+
+    public List<PlayerEntity> getPreviousTickPlayers() {
+        return previousTickPlayers;
+    }
+
+    public void from(ClaimAnchorBlockEntity be) {
+        this.previousTickPlayers.addAll(be.getPreviousTickPlayers());
+        this.augmentEntities.putAll(be.getAugmentEntities());
+    }
 }

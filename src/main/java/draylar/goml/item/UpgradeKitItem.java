@@ -4,18 +4,19 @@ import com.jamieswhiteshirt.rtree3i.Box;
 import com.jamieswhiteshirt.rtree3i.Entry;
 import com.jamieswhiteshirt.rtree3i.Selection;
 import draylar.goml.GetOffMyLawn;
-import draylar.goml.api.ClaimBox;
 import draylar.goml.api.Claim;
+import draylar.goml.api.ClaimBox;
 import draylar.goml.api.ClaimUtils;
 import draylar.goml.block.ClaimAnchorBlock;
+import draylar.goml.entity.ClaimAnchorBlockEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
@@ -77,6 +78,7 @@ public class UpgradeKitItem extends Item {
                         GetOffMyLawn.CLAIM.get(world).remove(currentClaim.get().getKey());
 
                         // set block
+                        BlockEntity oldBE = world.getBlockEntity(pos);
                         world.setBlockState(pos, to.getDefaultState());
 
                         // new claim
@@ -86,6 +88,12 @@ public class UpgradeKitItem extends Item {
                         // decrement stack
                         if(!context.getPlayer().isCreative() && !context.getPlayer().isSpectator()) {
                             context.getStack().decrement(1);
+                        }
+
+                        // transfer BE data
+                        BlockEntity newBE = world.getBlockEntity(pos);
+                        if(oldBE instanceof ClaimAnchorBlockEntity && newBE instanceof ClaimAnchorBlockEntity) {
+                            ((ClaimAnchorBlockEntity) newBE).from(((ClaimAnchorBlockEntity) oldBE));
                         }
                     }
                 }
