@@ -2,6 +2,7 @@ package draylar.goml.mixin.augment;
 
 import draylar.goml.api.Claim;
 import draylar.goml.api.ClaimUtils;
+import draylar.goml.entity.ClaimAnchorBlockEntity;
 import draylar.goml.registry.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -27,7 +28,13 @@ public abstract class VillagerEntityMixin extends LivingEntity {
             if(eds.getAttacker() instanceof HostileEntity) {
                 boolean b = ClaimUtils.getClaimsAt(world, getBlockPos()).anyMatch(claim -> {
                     Claim foundClaim = claim.getValue();
-                    return ClaimUtils.getAnchor(world, foundClaim).hasAugment(Blocks.VILLAGE_CORE.getFirst());
+                    ClaimAnchorBlockEntity anchor = ClaimUtils.getAnchor(world, foundClaim);
+
+                    if(anchor != null) {
+                        return anchor.hasAugment(Blocks.VILLAGE_CORE.getFirst());
+                    } else {
+                        return false;
+                    }
                 });
 
                 if(b) return true;

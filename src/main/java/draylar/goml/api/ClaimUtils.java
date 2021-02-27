@@ -9,9 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 public class ClaimUtils {
 
@@ -80,11 +78,21 @@ public class ClaimUtils {
         return claim.getValue().getOwners().contains(checkPlayer.getUuid()) || checkPlayer.hasPermissionLevel(3);
     }
 
+    @Nullable
     public static ClaimAnchorBlockEntity getAnchor(World world, Claim claim) {
         ClaimAnchorBlockEntity claimAnchor = (ClaimAnchorBlockEntity) world.getBlockEntity(claim.getOrigin());
 
         if(claimAnchor == null) {
-            GetOffMyLawn.LOGGER.warn(String.format("A claim anchor was requested at %s, but no Claim Anchor BE was found! Was the claim not properly removed? NPEs may follow.", claim.getOrigin().toString()));
+            GetOffMyLawn.LOGGER.warn(String.format("A claim anchor was requested at %s, but no Claim Anchor BE was found! Was the claim not properly removed? Removing the claim now.", claim.getOrigin().toString()));
+
+            // Remove claim
+            GetOffMyLawn.CLAIM.get(world).getClaims().entries().forEach(entry -> {
+                if(entry.getValue() == claim) {
+                    GetOffMyLawn.CLAIM.get(world).remove(entry.getKey());
+                }
+            });
+
+            return null;
         }
 
         return claimAnchor;
