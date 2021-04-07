@@ -10,19 +10,19 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.registry.Registry;
 
-public class Entities {
+public class GOMLEntities {
 
     public static final BlockEntityType<ClaimAnchorBlockEntity> CLAIM_ANCHOR = register(
             "claim_anchor",
             BlockEntityType.Builder.create(
                     ClaimAnchorBlockEntity::new,
-                    Blocks.ANCHORS.toArray(new Block[0])).build(null));
+                    GOMLBlocks.ANCHORS.toArray(new Block[0])).build(null));
 
     public static final BlockEntityType<ClaimAugmentBlockEntity> CLAIM_AUGMENT = register(
             "claim_augment",
             BlockEntityType.Builder.create(
                     ClaimAugmentBlockEntity::new,
-                    Blocks.AUGMENTS.toArray(new Block[0])).build(null));
+                    GOMLBlocks.AUGMENTS.toArray(new Block[0])).build(null));
 
     private static <T extends BlockEntity> BlockEntityType<T> register(String name, BlockEntityType<T> entity) {
         return Registry.register(Registry.BLOCK_ENTITY_TYPE, GetOffMyLawn.id(name), entity);
@@ -36,7 +36,7 @@ public class Entities {
         // NO-OP
     }
 
-    private Entities() {
+    private GOMLEntities() {
         // NO-OP
     }
 }

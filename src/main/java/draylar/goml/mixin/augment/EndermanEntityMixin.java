@@ -3,11 +3,10 @@ package draylar.goml.mixin.augment;
 import draylar.goml.api.Claim;
 import draylar.goml.api.ClaimUtils;
 import draylar.goml.entity.ClaimAnchorBlockEntity;
-import draylar.goml.registry.Blocks;
+import draylar.goml.registry.GOMLBlocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,7 +31,7 @@ public abstract class EndermanEntityMixin extends HostileEntity {
             ClaimAnchorBlockEntity anchor = ClaimUtils.getAnchor(world, foundClaim);
 
             if(anchor != null) {
-                return anchor.hasAugment(Blocks.ENDER_BINDING.getFirst());
+                return anchor.hasAugment(GOMLBlocks.ENDER_BINDING.getFirst());
             } else {
                 return false;
             }

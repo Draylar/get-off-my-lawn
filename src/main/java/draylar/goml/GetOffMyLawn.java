@@ -5,10 +5,9 @@ import draylar.goml.cca.ClaimComponent;
 import draylar.goml.cca.WorldClaimComponent;
 import draylar.goml.command.ClaimCommand;
 import draylar.goml.config.GOMLConfig;
-import draylar.goml.registry.Blocks;
-import draylar.goml.registry.Entities;
-import draylar.goml.registry.Items;
-import io.github.ladysnake.pal.AbilitySource;
+import draylar.goml.registry.GOMLBlocks;
+import draylar.goml.registry.GOMLEntities;
+import draylar.goml.registry.GOMLItems;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
 import nerdhub.cardinal.components.api.ComponentRegistry;
@@ -31,14 +30,14 @@ public class GetOffMyLawn implements ModInitializer {
 	).attach(WorldComponentCallback.EVENT, WorldClaimComponent::new);
 
 	public static final GOMLConfig CONFIG = AutoConfig.register(GOMLConfig.class, JanksonConfigSerializer::new).getConfig();
-	public static final ItemGroup GROUP = FabricItemGroupBuilder.build(id("group"), () -> new ItemStack(Items.GOGGLES));
+	public static final ItemGroup GROUP = FabricItemGroupBuilder.build(id("group"), () -> new ItemStack(GOMLItems.GOGGLES));
 	public static final Logger LOGGER = LogManager.getLogger();
 
 	@Override
 	public void onInitialize() {
-		Blocks.init();
-		Items.init();
-		Entities.init();
+		GOMLBlocks.init();
+		GOMLItems.init();
+		GOMLEntities.init();
 		EventHandlers.init();
 		ClaimCommand.init();
 

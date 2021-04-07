@@ -17,7 +17,7 @@ import net.minecraft.util.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Blocks {
+public class GOMLBlocks {
 
     public static final List<ClaimAnchorBlock> ANCHORS = new ArrayList<>();
     public static final List<ClaimAugmentBlock> AUGMENTS = new ArrayList<>();
@@ -87,7 +87,7 @@ public class Blocks {
         // NO-OP
     }
 
-    private Blocks() {
+    private GOMLBlocks() {
         // NO-OP
     }
 }

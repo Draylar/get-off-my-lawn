@@ -8,7 +8,7 @@ import draylar.goml.api.ClaimBox;
 import draylar.goml.api.ClaimUtils;
 import draylar.goml.block.ClaimAnchorBlock;
 import draylar.goml.block.ClaimAugmentBlock;
-import draylar.goml.registry.Entities;
+import draylar.goml.registry.GOMLEntities;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -36,7 +36,7 @@ public class ClaimAnchorBlockEntity extends BlockEntity implements Tickable {
     private Claim claim;
 
     public ClaimAnchorBlockEntity() {
-        super(Entities.CLAIM_ANCHOR);
+        super(GOMLEntities.CLAIM_ANCHOR);
     }
 
     @Override

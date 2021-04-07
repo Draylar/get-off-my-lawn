@@ -1,7 +1,7 @@
 package draylar.goml.mixin;
 
 import draylar.goml.api.WorldRendererUtils;
-import draylar.goml.registry.Items;
+import draylar.goml.registry.GOMLItems;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -51,7 +51,7 @@ public class WorldRendererMixin {
     {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
 
-        if(player != null && MinecraftClient.getInstance().player.getEquippedStack(EquipmentSlot.HEAD).getItem().equals(Items.GOGGLES)) {
+        if(player != null && MinecraftClient.getInstance().player.getEquippedStack(EquipmentSlot.HEAD).getItem().equals(GOMLItems.GOGGLES)) {
             Profiler profiler = world.getProfiler();
             Vec3d camPos = camera.getPos();
             profiler.swap("goml");

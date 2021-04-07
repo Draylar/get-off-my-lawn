@@ -2,8 +2,7 @@ package draylar.goml.entity;
 
 import draylar.goml.GetOffMyLawn;
 import draylar.goml.api.Augment;
-import draylar.goml.registry.Entities;
-import net.minecraft.block.Block;
+import draylar.goml.registry.GOMLEntities;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
@@ -19,7 +18,7 @@ public class ClaimAugmentBlockEntity extends BlockEntity implements Tickable {
     private Augment augment;
 
     public ClaimAugmentBlockEntity() {
-        super(Entities.CLAIM_AUGMENT);
+        super(GOMLEntities.CLAIM_AUGMENT);
     }
 
     @Override
