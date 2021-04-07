@@ -35,10 +35,9 @@ dependencies {
 		exclude group: "net.fabricmc.fabric-api"
 	}
 
-	include ("me.sargunvohra.mcmods:autoconfig1u:${project.autoconfig_version}")
-	modImplementation ("me.sargunvohra.mcmods:autoconfig1u:${project.autoconfig_version}") {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
+	// Config
+	modImplementation 'com.github.Draylar.omega-config:omega-config-base:1.0.4-beta'
+	include 'com.github.Draylar.omega-config:omega-config-base:1.0.4-beta:min'
 
 	// CCA for data
 	modImplementation "io.github.OnyxStudios.Cardinal-Components-API:cardinal-components-base:${project.cca_version}"

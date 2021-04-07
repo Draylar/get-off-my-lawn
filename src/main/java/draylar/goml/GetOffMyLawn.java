@@ -8,6 +8,7 @@ import draylar.goml.config.GOMLConfig;
 import draylar.goml.registry.GOMLBlocks;
 import draylar.goml.registry.GOMLEntities;
 import draylar.goml.registry.GOMLItems;
+import draylar.omegaconfig.OmegaConfig;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
 import nerdhub.cardinal.components.api.ComponentRegistry;
@@ -29,7 +30,7 @@ public class GetOffMyLawn implements ModInitializer {
 			ClaimComponent.class
 	).attach(WorldComponentCallback.EVENT, WorldClaimComponent::new);
 
-	public static final GOMLConfig CONFIG = AutoConfig.register(GOMLConfig.class, JanksonConfigSerializer::new).getConfig();
+	public static final GOMLConfig CONFIG = OmegaConfig.register(GOMLConfig.class);
 	public static final ItemGroup GROUP = FabricItemGroupBuilder.build(id("group"), () -> new ItemStack(GOMLItems.GOGGLES));
 	public static final Logger LOGGER = LogManager.getLogger();
 

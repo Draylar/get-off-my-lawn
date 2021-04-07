@@ -1,13 +1,12 @@
 package draylar.goml.config;
 
-import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
+
+import draylar.omegaconfig.api.Config;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Config(name = "getoffmylawn")
-public class GOMLConfig implements ConfigData {
+public class GOMLConfig implements Config {
 
     public List<String> dimensionBlacklist = new ArrayList<>();
     public int makeshiftRadius = 10;
@@ -16,4 +15,14 @@ public class GOMLConfig implements ConfigData {
     public int crystalRadius = 75;
     public int emeradicRadius = 125;
     public int witheredRadius = 200;
+
+    @Override
+    public String getName() {
+        return "getoffmylawn";
+    }
+
+    @Override
+    public String getExtension() {
+        return "json5";
+    }
 }
