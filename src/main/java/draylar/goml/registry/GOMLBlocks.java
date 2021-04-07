@@ -29,13 +29,13 @@ public class GOMLBlocks {
     public static final Pair<ClaimAnchorBlock, Item> EMERADIC_CLAIM_ANCHOR = register("emeradic_claim_anchor", GetOffMyLawn.CONFIG.emeradicRadius, 20, FabricToolTags.PICKAXES);
     public static final Pair<ClaimAnchorBlock, Item> WITHERED_CLAIM_ANCHOR = register("withered_claim_anchor", GetOffMyLawn.CONFIG.witheredRadius, 25, FabricToolTags.PICKAXES);
 
-    public static final Pair<ClaimAugmentBlock, Item> ENDER_BINDING = register("ender_binding", new EnderBindingAugmentBlock(FabricBlockSettings.of(Material.STONE).hardness(10).breakByTool(FabricToolTags.PICKAXES)), 2);
-    public static final Pair<ClaimAugmentBlock, Item> LAKE_SPIRIT_GRACE = register("lake_spirit_grace", new LakeSpiritGraceAugmentBlock(FabricBlockSettings.of(Material.STONE).hardness(10).breakByTool(FabricToolTags.PICKAXES)), 2);
-    public static final Pair<ClaimAugmentBlock, Item> ANGELIC_AURA = register("angelic_aura", new AngelicAuraAugmentBlock(FabricBlockSettings.of(Material.STONE).hardness(10).breakByTool(FabricToolTags.PICKAXES)), 2);
-    public static final Pair<ClaimAugmentBlock, Item> HEAVEN_WINGS = register("heaven_wings", new HeavenWingsAugmentBlock(FabricBlockSettings.of(Material.STONE).hardness(10).breakByTool(FabricToolTags.PICKAXES)), 2);
-    public static final Pair<ClaimAugmentBlock, Item> VILLAGE_CORE = register("village_core", new ClaimAugmentBlock(FabricBlockSettings.of(Material.STONE).hardness(10).breakByTool(FabricToolTags.PICKAXES)), 2);
-    public static final Pair<ClaimAugmentBlock, Item> WITHERING_SEAL = register("withering_seal", new WitheringSealAugmentBlock(FabricBlockSettings.of(Material.STONE).hardness(10).breakByTool(FabricToolTags.PICKAXES)), 2);
-    public static final Pair<ClaimAugmentBlock, Item> CHAOS_ZONE = register("chaos_zone", new ChaosZoneAugmentBlock(FabricBlockSettings.of(Material.STONE).hardness(10).breakByTool(FabricToolTags.PICKAXES)), 2);
+    public static final Pair<ClaimAugmentBlock, Item> ENDER_BINDING = register("ender_binding", new EnderBindingAugmentBlock(FabricBlockSettings.of(Material.STONE).hardness(10).resistance(3600000.0F).breakByTool(FabricToolTags.PICKAXES)), 2);
+    public static final Pair<ClaimAugmentBlock, Item> LAKE_SPIRIT_GRACE = register("lake_spirit_grace", new LakeSpiritGraceAugmentBlock(FabricBlockSettings.of(Material.STONE).hardness(10).resistance(3600000.0F).breakByTool(FabricToolTags.PICKAXES)), 2);
+    public static final Pair<ClaimAugmentBlock, Item> ANGELIC_AURA = register("angelic_aura", new AngelicAuraAugmentBlock(FabricBlockSettings.of(Material.STONE).hardness(10).resistance(3600000.0F).breakByTool(FabricToolTags.PICKAXES)), 2);
+    public static final Pair<ClaimAugmentBlock, Item> HEAVEN_WINGS = register("heaven_wings", new HeavenWingsAugmentBlock(FabricBlockSettings.of(Material.STONE).hardness(10).resistance(3600000.0F).breakByTool(FabricToolTags.PICKAXES)), 2);
+    public static final Pair<ClaimAugmentBlock, Item> VILLAGE_CORE = register("village_core", new ClaimAugmentBlock(FabricBlockSettings.of(Material.STONE).hardness(10).resistance(3600000.0F).breakByTool(FabricToolTags.PICKAXES)), 2);
+    public static final Pair<ClaimAugmentBlock, Item> WITHERING_SEAL = register("withering_seal", new WitheringSealAugmentBlock(FabricBlockSettings.of(Material.STONE).hardness(10).resistance(3600000.0F).breakByTool(FabricToolTags.PICKAXES)), 2);
+    public static final Pair<ClaimAugmentBlock, Item> CHAOS_ZONE = register("chaos_zone", new ChaosZoneAugmentBlock(FabricBlockSettings.of(Material.STONE).hardness(10).resistance(3600000.0F).breakByTool(FabricToolTags.PICKAXES)), 2);
 
     private static Pair<ClaimAnchorBlock, Item> register(String name, int radius, float hardness, Tag<Item> toolTag) {
         ClaimAnchorBlock claimAnchorBlock;
