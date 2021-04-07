@@ -19,10 +19,6 @@ import net.minecraft.util.math.BlockPos;
 
 public class EventHandlers {
 
-    public static final TranslatableText BLOCK_PROTECTED = new TranslatableText("goml.block_protected");
-    public static final TranslatableText ENTITY_PROTECTED = new TranslatableText("goml.entity_protected");
-    public static final TranslatableText AREA_PROTECTED = new TranslatableText("goml.area_protected");
-
     private EventHandlers() {
         // NO-OP
     }
