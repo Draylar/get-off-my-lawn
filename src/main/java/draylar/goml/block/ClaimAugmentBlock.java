@@ -15,6 +15,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
+import org.jetbrains.annotations.Nullable;
 
 public class ClaimAugmentBlock extends Block implements Augment, BlockEntityProvider {
 
@@ -89,8 +90,9 @@ public class ClaimAugmentBlock extends Block implements Augment, BlockEntityProv
         super.onBreak(world, pos, state, player);
     }
 
+    @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockView world) {
-        return new ClaimAugmentBlockEntity();
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new ClaimAugmentBlockEntity(pos, state);
     }
 }

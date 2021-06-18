@@ -16,6 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 
@@ -37,7 +38,6 @@ public class ClaimAnchorBlock extends Block implements BlockEntityProvider {
         if(!world.isClient()) {
             Claim claimInfo = new Claim(Collections.singleton(placer.getUuid()), pos);
             GetOffMyLawn.CLAIM.get(world).add(new ClaimBox(pos, radius), claimInfo);
-            GetOffMyLawn.CLAIM.get(world).sync();
 
             // Assign claim to BE
             BlockEntity be = world.getBlockEntity(pos);
@@ -87,8 +87,9 @@ public class ClaimAnchorBlock extends Block implements BlockEntityProvider {
         return radius;
     }
 
+    @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockView world) {
-        return new ClaimAnchorBlockEntity();
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new ClaimAnchorBlockEntity(pos, state);
     }
 }

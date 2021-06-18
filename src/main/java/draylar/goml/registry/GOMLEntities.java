@@ -3,6 +3,7 @@ package draylar.goml.registry;
 import draylar.goml.GetOffMyLawn;
 import draylar.goml.entity.ClaimAnchorBlockEntity;
 import draylar.goml.entity.ClaimAugmentBlockEntity;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -14,13 +15,13 @@ public class GOMLEntities {
 
     public static final BlockEntityType<ClaimAnchorBlockEntity> CLAIM_ANCHOR = register(
             "claim_anchor",
-            BlockEntityType.Builder.create(
+            FabricBlockEntityTypeBuilder.create(
                     ClaimAnchorBlockEntity::new,
                     GOMLBlocks.ANCHORS.toArray(new Block[0])).build(null));
 
     public static final BlockEntityType<ClaimAugmentBlockEntity> CLAIM_AUGMENT = register(
             "claim_augment",
-            BlockEntityType.Builder.create(
+            FabricBlockEntityTypeBuilder.create(
                     ClaimAugmentBlockEntity::new,
                     GOMLBlocks.AUGMENTS.toArray(new Block[0])).build(null));
 

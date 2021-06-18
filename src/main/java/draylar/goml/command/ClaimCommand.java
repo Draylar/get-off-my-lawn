@@ -10,7 +10,6 @@ import draylar.goml.api.ClaimBox;
 import draylar.goml.api.ClaimUtils;
 import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -21,9 +20,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ClaimCommand {
@@ -235,7 +232,7 @@ public class ClaimCommand {
                         player.sendMessage(prefix(new TranslatableText("goml.trusted", toAdd.getDisplayName())), false);
                     }
 
-                    GetOffMyLawn.CLAIM.get(player.world).sync();
+                    GetOffMyLawn.CLAIM.sync(player.world);
                 }
             });
         }
@@ -259,7 +256,7 @@ public class ClaimCommand {
                 if(claimedArea.getValue().isOwner(player)) {
                     claimedArea.getValue().untrust(toRemove);
                     player.sendMessage(prefix(new TranslatableText("goml.untrusted", toRemove.getDisplayName())), false);
-                    GetOffMyLawn.CLAIM.get(player.world).sync();
+                    GetOffMyLawn.CLAIM.sync(player.world);
                 }
             });
         }

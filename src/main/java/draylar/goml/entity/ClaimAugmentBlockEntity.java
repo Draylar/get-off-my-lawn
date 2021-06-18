@@ -6,42 +6,41 @@ import draylar.goml.registry.GOMLEntities;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Tickable;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 
-public class ClaimAugmentBlockEntity extends BlockEntity implements Tickable {
+public class ClaimAugmentBlockEntity extends BlockEntity {
 
     private static final String PARENT_POSITION_KEY = "ParentPosition";
     private ClaimAnchorBlockEntity parent;
     private BlockPos parentPosition;
     private Augment augment;
 
-    public ClaimAugmentBlockEntity() {
-        super(GOMLEntities.CLAIM_AUGMENT);
+    public ClaimAugmentBlockEntity(BlockPos pos, BlockState state) {
+        super(GOMLEntities.CLAIM_AUGMENT, pos, state);
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public NbtCompound writeNbt(NbtCompound tag) {
         if(parent != null) {
             tag.putLong(PARENT_POSITION_KEY, parent.getPos().asLong());
         }
 
-        return super.toTag(tag);
+        return super.writeNbt(tag);
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
+    public void readNbt(NbtCompound tag) {
         this.parentPosition = BlockPos.fromLong(tag.getLong(PARENT_POSITION_KEY));
 
         if(augment == null) {
 
-            if(state.getBlock() instanceof Augment) {
-                initialize((Augment) state.getBlock());
+            if(getCachedState().getBlock() instanceof Augment) {
+                initialize((Augment) getCachedState().getBlock());
             }
         }
 
-        super.fromTag(state, tag);
+        super.readNbt(tag);
     }
 
     public void remove() {
@@ -65,31 +64,30 @@ public class ClaimAugmentBlockEntity extends BlockEntity implements Tickable {
         return augment;
     }
 
-    @Override
-    public void tick() {
-        assert world != null;
+    public static void tick(ClaimAugmentBlockEntity entity) {
+        assert entity.world != null;
 
-        if(world.isClient) {
+        if(entity.world.isClient) {
             return;
         }
 
         // Parent is null and parent position is not null, assume we are just loading the augment from tags.
-        if(parent == null && parentPosition != null) {
-            BlockEntity blockEntity = world.getBlockEntity(parentPosition);
+        if(entity.parent == null && entity.parentPosition != null) {
+            BlockEntity blockEntity = entity.world.getBlockEntity(entity.parentPosition);
 
             if(blockEntity instanceof ClaimAnchorBlockEntity) {
-                this.parent = (ClaimAnchorBlockEntity) blockEntity;
+                entity.parent = (ClaimAnchorBlockEntity) blockEntity;
             } else {
-                GetOffMyLawn.LOGGER.warn(String.format("An augment at %s tried to locate a parent at %s, but it could not be found!", pos.toString(), parentPosition.toString()));
-                world.setBlockState(pos, Blocks.AIR.getDefaultState());
+                GetOffMyLawn.LOGGER.warn(String.format("An augment at %s tried to locate a parent at %s, but it could not be found!", entity.pos.toString(), entity.parentPosition.toString()));
+                entity.world.setBlockState(entity.pos, Blocks.AIR.getDefaultState());
 
                 // todo: drop block
             }
         }
 
-        if (parent == null && parentPosition == null) {
-            GetOffMyLawn.LOGGER.warn(String.format("An augment at %s has an invalid parent and parent position! Removing now.", pos.toString()));
-            world.setBlockState(pos, Blocks.AIR.getDefaultState());
+        if (entity.parent == null && entity.parentPosition == null) {
+            GetOffMyLawn.LOGGER.warn(String.format("An augment at %s has an invalid parent and parent position! Removing now.", entity.pos.toString()));
+            entity.world.setBlockState(entity.pos, Blocks.AIR.getDefaultState());
 
             // todo: drop block
         }

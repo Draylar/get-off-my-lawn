@@ -1,20 +1,19 @@
-package draylar.goml.mixin;
+package draylar.goml.mixin.compat;
 
 import com.jamieswhiteshirt.rtree3i.Entry;
 import com.jamieswhiteshirt.rtree3i.Selection;
-import draylar.goml.api.ClaimBox;
 import draylar.goml.api.Claim;
+import draylar.goml.api.ClaimBox;
 import draylar.goml.api.ClaimUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import ladysnake.blast.common.world.CustomExplosion;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
-import org.spongepowered.asm.mixin.Final;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,17 +23,19 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Iterator;
 
-@Mixin(Explosion.class)
-public abstract class ExplosionMixin {
+@Mixin(CustomExplosion.class)
+public abstract class BlastExplosionMixin extends Explosion {
 
-    @Shadow @Final private World world;
-    @Shadow public abstract LivingEntity getCausingEntity();
     @Unique private BlockPos goml_contextPos = null;
+
+    private BlastExplosionMixin(World world, @Nullable Entity entity, double x, double y, double z, float power) {
+        super(world, entity, x, y, z, power);
+    }
 
     @Inject(
             method = "affectWorld",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void storePosition(boolean particles, CallbackInfo ci, boolean bl, ObjectArrayList objectArrayList, Iterator var4, BlockPos blockPos) {
+    private void storePosition(boolean boolean_1, CallbackInfo ci, boolean boolean_2, Iterator var3, BlockPos blockPos, ObjectArrayList objectArrayList, BlockState blockState) {
         goml_contextPos = blockPos;
     }
 
@@ -47,14 +48,7 @@ public abstract class ExplosionMixin {
 
     @Unique
     private boolean isValid(BlockPos blockPos) {
-        if(getCausingEntity() instanceof PlayerEntity) {
-            Selection<Entry<ClaimBox, Claim>> claimsFound = ClaimUtils.getClaimsAt(world, blockPos);
-
-            if (!claimsFound.isEmpty()) {
-                return !claimsFound.anyMatch((Entry<ClaimBox, Claim> boxInfo) -> !boxInfo.getValue().hasPermission((PlayerEntity) getCausingEntity()));
-            }
-        }
-
-        return true;
+        Selection<Entry<ClaimBox, Claim>> claimsFound = ClaimUtils.getClaimsAt(super.world, blockPos);
+        return claimsFound.isEmpty();
     }
 }

@@ -3,12 +3,11 @@ package draylar.goml.cca;
 import com.jamieswhiteshirt.rtree3i.ConfigurationBuilder;
 import com.jamieswhiteshirt.rtree3i.RTreeMap;
 import draylar.goml.GetOffMyLawn;
-import draylar.goml.api.ClaimBox;
 import draylar.goml.api.Claim;
-import nerdhub.cardinal.components.api.ComponentType;
+import draylar.goml.api.ClaimBox;
 import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -29,48 +28,47 @@ public class WorldClaimComponent implements ClaimComponent {
     @Override
     public void add(ClaimBox box, Claim info) {
         this.claims = this.claims.put(box, info);
-        sync();
+        GetOffMyLawn.CLAIM.sync(world);
     }
 
     @Override
     public void remove(ClaimBox box) {
         this.claims = this.claims.remove(box);
-        sync();
+        GetOffMyLawn.CLAIM.sync(world);
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
+    public void readFromNbt(NbtCompound tag) {
         this.claims = RTreeMap.create(new ConfigurationBuilder().star().build(), ClaimBox::toBox);
 
-        ListTag listTag = tag.getList("Claims", NbtType.COMPOUND);
+        NbtList NbtList = tag.getList("Claims", NbtType.COMPOUND);
 
-        listTag.forEach(child -> {
-            CompoundTag childCompound = (CompoundTag) child;
-            ClaimBox box = boxFromTag((CompoundTag) childCompound.get("Box"));
-            Claim claimInfo = Claim.fromTag((CompoundTag) childCompound.get("Info"));
+        NbtList.forEach(child -> {
+            NbtCompound childCompound = (NbtCompound) child;
+            ClaimBox box = boxFromTag((NbtCompound) childCompound.get("Box"));
+            Claim claimInfo = Claim.fromTag((NbtCompound) childCompound.get("Info"));
             add(box, claimInfo);
         });
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        ListTag listTagClaims = new ListTag();
+    public void writeToNbt(NbtCompound tag) {
+        NbtList NbtListClaims = new NbtList();
 
         claims.entries().forEach(claim -> {
-            CompoundTag claimTag = new CompoundTag();
+            NbtCompound claimTag = new NbtCompound();
 
             claimTag.put("Box", serializeBox(claim.getKey()));
             claimTag.put("Info", claim.getValue().asTag());
 
-            listTagClaims.add(claimTag);
+            NbtListClaims.add(claimTag);
         });
 
-        tag.put("Claims", listTagClaims);
-        return tag;
+        tag.put("Claims", NbtListClaims);
     }
 
-    public CompoundTag serializeBox(ClaimBox box) {
-        CompoundTag boxTag = new CompoundTag();
+    public NbtCompound serializeBox(ClaimBox box) {
+        NbtCompound boxTag = new NbtCompound();
 
         boxTag.putLong("OriginPos", box.getOrigin().asLong());
         boxTag.putInt("Radius", box.getRadius());
@@ -78,19 +76,9 @@ public class WorldClaimComponent implements ClaimComponent {
         return boxTag;
     }
 
-    public ClaimBox boxFromTag(CompoundTag tag) {
+    public ClaimBox boxFromTag(NbtCompound tag) {
         BlockPos originPos = BlockPos.fromLong(tag.getLong("OriginPos"));
         int radius = tag.getInt("Radius");
         return new ClaimBox(originPos, radius);
-    }
-
-    @Override
-    public World getWorld() {
-        return world;
-    }
-
-    @Override
-    public ComponentType<?> getComponentType() {
-        return GetOffMyLawn.CLAIM;
     }
 }
