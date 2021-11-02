@@ -7,6 +7,7 @@ import draylar.goml.api.ClaimBox;
 import draylar.goml.api.ClaimUtils;
 import draylar.goml.api.PermissionReason;
 import draylar.goml.api.event.ClaimEvents;
+import draylar.goml.api.event.ModifyEvents;
 import draylar.goml.block.ClaimAnchorBlock;
 import draylar.goml.entity.ClaimAnchorBlockEntity;
 import net.fabricmc.fabric.api.event.player.*;
@@ -28,6 +29,7 @@ public class EventHandlers {
         registerInteractBlockCallback();
         registerAttackEntityCallback();
         registerInteractEntityCallback();
+        registerPlayerModifyCallback();
         registerAnchorAttackCallback();
     }
 
@@ -69,6 +71,13 @@ public class EventHandlers {
             ActionResult result = testPermission(claimsFound, player, Hand.MAIN_HAND, pos, PermissionReason.BLOCK_PROTECTED);
             return !result.equals(ActionResult.FAIL);
         });
+    }
+
+    private static void registerPlayerModifyCallback() {
+        ModifyEvents.PLAYER_MODIFY_AT.register(((world, player, pos) -> {
+            Selection<Entry<ClaimBox, Claim>> claimsFound = ClaimUtils.getClaimsAt(world, pos);
+            return testPermission(claimsFound, player, Hand.MAIN_HAND, pos, PermissionReason.BLOCK_PROTECTED);
+        }));
     }
 
     private static void registerAnchorAttackCallback() {

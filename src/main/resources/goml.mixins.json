@@ -11,7 +11,8 @@
     "TntEntityMixin",
     "augment.EndermanEntityMixin",
     "augment.VillagerEntityMixin",
-    "compat.BlastExplosionMixin"
+    "compat.BlastExplosionMixin",
+    "ServerWorldMixin"
   ],
   "client": [
     "WorldRendererMixin"
