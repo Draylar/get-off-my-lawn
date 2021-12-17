@@ -5,10 +5,16 @@ import draylar.goml.api.ClaimBox;
 import draylar.goml.api.Claim;
 import draylar.goml.api.ClaimUtils;
 import draylar.goml.entity.ClaimAnchorBlockEntity;
+import draylar.goml.entity.ClaimAugmentBlockEntity;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -37,7 +43,7 @@ public class ClaimAnchorBlock extends Block implements BlockEntityProvider {
         if(!world.isClient()) {
             Claim claimInfo = new Claim(Collections.singleton(placer.getUuid()), pos);
             GetOffMyLawn.CLAIM.get(world).add(new ClaimBox(pos, radius), claimInfo);
-            GetOffMyLawn.CLAIM.get(world).sync();
+            GetOffMyLawn.CLAIM.sync(world);
 
             // Assign claim to BE
             BlockEntity be = world.getBlockEntity(pos);
@@ -87,8 +93,18 @@ public class ClaimAnchorBlock extends Block implements BlockEntityProvider {
         return radius;
     }
 
+    @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockView world) {
-        return new ClaimAnchorBlockEntity();
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+        if(world.isClient) {
+            return null;
+        }
+        return (w, pos, s, blockEntity) -> ((ClaimAnchorBlockEntity)blockEntity).tick();
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new ClaimAnchorBlockEntity(pos, state);
     }
 }

@@ -9,6 +9,7 @@ import draylar.goml.api.ClaimUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
@@ -55,7 +56,7 @@ public abstract class ExplosionMixin {
     @Shadow @Final private List<BlockPos> affectedBlocks;
 
     @Shadow
-    protected static void method_24023(ObjectArrayList<Pair<ItemStack, BlockPos>> objectArrayList, ItemStack itemStack, BlockPos blockPos) {
+    private static void tryMergeStack(ObjectArrayList<Pair<ItemStack, BlockPos>> objectArrayList, ItemStack itemStack, BlockPos blockPos) {
     }
 
     @Shadow @Final private boolean createFire;
@@ -105,14 +106,14 @@ public abstract class ExplosionMixin {
                         BlockPos blockPos2 = blockPos.toImmutable();
                         this.world.getProfiler().push("explosion_blocks");
                         if (block.shouldDropItemsOnExplosion(((Explosion) (Object) this)) && this.world instanceof ServerWorld) {
-                            BlockEntity blockEntity = block.hasBlockEntity() ? this.world.getBlockEntity(blockPos) : null;
+                            BlockEntity blockEntity = block instanceof BlockEntityProvider ? this.world.getBlockEntity(blockPos) : null;
                             LootContext.Builder builder = (new LootContext.Builder((ServerWorld) this.world)).random(this.world.random).parameter(LootContextParameters.ORIGIN, new Vec3d(blockPos.getX(), blockPos.getY(), blockPos.getZ())).parameter(LootContextParameters.TOOL, ItemStack.EMPTY).optionalParameter(LootContextParameters.BLOCK_ENTITY, blockEntity).optionalParameter(LootContextParameters.THIS_ENTITY, entity);
                             if (this.destructionType == Explosion.DestructionType.DESTROY) {
                                 builder.parameter(LootContextParameters.EXPLOSION_RADIUS, this.power);
                             }
 
                             blockState.getDroppedStacks(builder).forEach((itemStack) -> {
-                                method_24023(objectArrayList, itemStack, blockPos2);
+                                tryMergeStack(objectArrayList, itemStack, blockPos2);
                             });
                         }
 

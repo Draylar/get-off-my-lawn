@@ -5,6 +5,7 @@ import draylar.goml.GetOffMyLawn;
 import draylar.goml.block.ClaimAnchorBlock;
 import draylar.goml.block.ClaimAugmentBlock;
 import draylar.goml.block.augment.*;
+import draylar.goml.item.ClaimAnchorBlockItem;
 import draylar.goml.item.TooltippedBlockItem;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tools.FabricToolTags;
@@ -54,7 +55,7 @@ public class GOMLBlocks {
             );
         }
 
-        Item registeredItem = Registry.register(Registry.ITEM, GetOffMyLawn.id(name), new BlockItem(claimAnchorBlock, new Item.Settings().group(GetOffMyLawn.GROUP)));
+        Item registeredItem = Registry.register(Registry.ITEM, GetOffMyLawn.id(name), new ClaimAnchorBlockItem(claimAnchorBlock, new Item.Settings().group(GetOffMyLawn.GROUP)));
         ANCHORS.add(claimAnchorBlock);
         return Pair.of(claimAnchorBlock, registeredItem);
     }

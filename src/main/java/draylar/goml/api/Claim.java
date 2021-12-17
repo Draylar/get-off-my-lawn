@@ -2,9 +2,9 @@ package draylar.goml.api;
 
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Collections;
@@ -100,26 +100,26 @@ public class Claim {
     }
 
     /**
-     * Serializes this {@link Claim} to a {@link CompoundTag} and returns it.
+     * Serializes this {@link Claim} to a {@link net.minecraft.nbt.NbtCompound} and returns it.
      *
      * <p>The following tags are stored at the top level of the tag:
      * <ul>
      * <li>"Owners" - list of {@link UUID}s of claim owners
      * <li>"Pos" - origin {@link BlockPos} of claim
      *
-     * @return  this object serialized to a {@link CompoundTag}
+     * @return  this object serialized to a {@link NbtCompound}
      */
-    public CompoundTag asTag() {
-        CompoundTag tag = new CompoundTag();
+    public NbtCompound asTag() {
+        NbtCompound tag = new NbtCompound();
 
         // collect owner UUIDs into list
-        ListTag ownersTag = new ListTag();
+        NbtList ownersTag = new NbtList();
         owners.forEach(ownerUUID -> {
             ownersTag.add(NbtHelper.fromUuid(ownerUUID));
         });
 
         // collect trusted UUIDs into list
-        ListTag trustedTag = new ListTag();
+        NbtList trustedTag = new NbtList();
         trusted.forEach(trustedUUID -> {
             trustedTag.add(NbtHelper.fromUuid(trustedUUID));
         });
@@ -132,7 +132,7 @@ public class Claim {
     }
 
     /**
-     * Uses the top level information in the given {@link CompoundTag} to construct a {@link Claim}.
+     * Uses the top level information in the given {@link NbtCompound} to construct a {@link Claim}.
      *
      * <p>This method expects to find the following tags at the top level of the tag:
      * <ul>
@@ -142,7 +142,7 @@ public class Claim {
      * @param tag  tag to deserialize information from
      * @return  {@link Claim} instance with information from tag
      */
-    public static Claim fromTag(CompoundTag tag) {
+    public static Claim fromTag(NbtCompound tag) {
         // Handle legacy data stored in "Owner" key, which is a single UUID
         if(tag.containsUuid(OWNER_KEY)) {
             return new Claim(Collections.singleton(tag.getUuid(OWNER_KEY)), BlockPos.fromLong(tag.getLong(POSITION_KEY)));
@@ -150,12 +150,12 @@ public class Claim {
 
         // Collect UUID of owners
         Set<UUID> ownerUUIDs = new HashSet<>();
-        ListTag ownersTag = tag.getList(OWNERS_KEY, NbtType.INT_ARRAY);
+        NbtList ownersTag = tag.getList(OWNERS_KEY, NbtType.INT_ARRAY);
         ownersTag.forEach(ownerUUID -> ownerUUIDs.add(NbtHelper.toUuid(ownerUUID)));
 
         // Collect UUID of trusted
         Set<UUID> trustedUUIDs = new HashSet<>();
-        ListTag trustedTag = tag.getList(TRUSTED_KEY, NbtType.INT_ARRAY);
+        NbtList trustedTag = tag.getList(TRUSTED_KEY, NbtType.INT_ARRAY);
         trustedTag.forEach(trustedUUID -> trustedUUIDs.add(NbtHelper.toUuid(trustedUUID)));
 
         return new Claim(ownerUUIDs, trustedUUIDs, BlockPos.fromLong(tag.getLong(POSITION_KEY)));

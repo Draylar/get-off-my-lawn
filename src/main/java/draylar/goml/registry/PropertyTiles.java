@@ -10,17 +10,19 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.registry.Registry;
 
-public class GOMLEntities {
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+
+public class PropertyTiles {
 
     public static final BlockEntityType<ClaimAnchorBlockEntity> CLAIM_ANCHOR = register(
             "claim_anchor",
-            BlockEntityType.Builder.create(
+            FabricBlockEntityTypeBuilder.create(
                     ClaimAnchorBlockEntity::new,
                     GOMLBlocks.ANCHORS.toArray(new Block[0])).build(null));
 
     public static final BlockEntityType<ClaimAugmentBlockEntity> CLAIM_AUGMENT = register(
             "claim_augment",
-            BlockEntityType.Builder.create(
+            FabricBlockEntityTypeBuilder.create(
                     ClaimAugmentBlockEntity::new,
                     GOMLBlocks.AUGMENTS.toArray(new Block[0])).build(null));
 
@@ -36,7 +38,7 @@ public class GOMLEntities {
         // NO-OP
     }
 
-    private GOMLEntities() {
+    private PropertyTiles() {
         // NO-OP
     }
 }
