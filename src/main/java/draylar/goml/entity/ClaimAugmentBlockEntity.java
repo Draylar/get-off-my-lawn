@@ -2,46 +2,45 @@ package draylar.goml.entity;
 
 import draylar.goml.GetOffMyLawn;
 import draylar.goml.api.Augment;
-import draylar.goml.registry.GOMLEntities;
+import draylar.goml.registry.PropertyTiles;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Tickable;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 
-public class ClaimAugmentBlockEntity extends BlockEntity implements Tickable {
+public class ClaimAugmentBlockEntity extends BlockEntity {
 
     private static final String PARENT_POSITION_KEY = "ParentPosition";
     private ClaimAnchorBlockEntity parent;
     private BlockPos parentPosition;
     private Augment augment;
 
-    public ClaimAugmentBlockEntity() {
-        super(GOMLEntities.CLAIM_AUGMENT);
+    public ClaimAugmentBlockEntity(BlockPos pos, BlockState state) {
+        super(PropertyTiles.CLAIM_AUGMENT, pos, state);
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public void writeNbt(NbtCompound tag) {
         if(parent != null) {
             tag.putLong(PARENT_POSITION_KEY, parent.getPos().asLong());
         }
 
-        return super.toTag(tag);
+        super.writeNbt(tag);
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
+    public void readNbt(NbtCompound tag) {
         this.parentPosition = BlockPos.fromLong(tag.getLong(PARENT_POSITION_KEY));
 
         if(augment == null) {
 
-            if(state.getBlock() instanceof Augment) {
-                initialize((Augment) state.getBlock());
+            if(this.getCachedState().getBlock() instanceof Augment) {
+                initialize((Augment) this.getCachedState().getBlock());
             }
         }
 
-        super.fromTag(state, tag);
+        super.readNbt(tag);
     }
 
     public void remove() {
@@ -65,7 +64,6 @@ public class ClaimAugmentBlockEntity extends BlockEntity implements Tickable {
         return augment;
     }
 
-    @Override
     public void tick() {
         assert world != null;
 

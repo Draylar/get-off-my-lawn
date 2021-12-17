@@ -107,7 +107,7 @@ public class ClaimCommand {
      * @return  success flag
      */
     private static int general(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        MinecraftServer server = context.getSource().getMinecraftServer();
+        MinecraftServer server = context.getSource().getServer();
         ServerPlayerEntity player = context.getSource().getPlayer();
         AtomicInteger numberOfClaimsTotal = new AtomicInteger();
 
@@ -235,7 +235,7 @@ public class ClaimCommand {
                         player.sendMessage(prefix(new TranslatableText("goml.trusted", toAdd.getDisplayName())), false);
                     }
 
-                    GetOffMyLawn.CLAIM.get(player.world).sync();
+                    GetOffMyLawn.CLAIM.sync(player.world);
                 }
             });
         }
@@ -259,7 +259,7 @@ public class ClaimCommand {
                 if(claimedArea.getValue().isOwner(player)) {
                     claimedArea.getValue().untrust(toRemove);
                     player.sendMessage(prefix(new TranslatableText("goml.untrusted", toRemove.getDisplayName())), false);
-                    GetOffMyLawn.CLAIM.get(player.world).sync();
+                    GetOffMyLawn.CLAIM.sync(player.world);
                 }
             });
         }

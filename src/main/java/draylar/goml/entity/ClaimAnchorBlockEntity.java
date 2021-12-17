@@ -8,15 +8,14 @@ import draylar.goml.api.ClaimBox;
 import draylar.goml.api.ClaimUtils;
 import draylar.goml.block.ClaimAnchorBlock;
 import draylar.goml.block.ClaimAugmentBlock;
-import draylar.goml.registry.GOMLEntities;
+import draylar.goml.registry.PropertyTiles;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.LongTag;
-import net.minecraft.util.Tickable;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtLong;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 
@@ -26,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ClaimAnchorBlockEntity extends BlockEntity implements Tickable {
+public class ClaimAnchorBlockEntity extends BlockEntity {
 
     private static final String AUGMENT_LIST_KEY = "AugmentPositions";
 
@@ -35,27 +34,27 @@ public class ClaimAnchorBlockEntity extends BlockEntity implements Tickable {
     private final List<PlayerEntity> previousTickPlayers = new ArrayList<>();
     private Claim claim;
 
-    public ClaimAnchorBlockEntity() {
-        super(GOMLEntities.CLAIM_ANCHOR);
+    public ClaimAnchorBlockEntity(BlockPos pos, BlockState state) {
+        super(PropertyTiles.CLAIM_ANCHOR, pos, state);
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        ListTag positions = new ListTag();
-        augmentEntities.forEach((pos, be) -> positions.add(LongTag.of(pos.asLong())));
+    public void writeNbt(NbtCompound tag) {
+        NbtList positions = new NbtList();
+        augmentEntities.forEach((pos, be) -> positions.add(NbtLong.of(pos.asLong())));
         tag.put(AUGMENT_LIST_KEY, positions);
-        return super.toTag(tag);
+        super.writeNbt(tag);
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        ListTag positions = tag.getList(AUGMENT_LIST_KEY, NbtType.LONG);
+    public void readNbt(NbtCompound tag) {
+        NbtList positions = tag.getList(AUGMENT_LIST_KEY, NbtType.LONG);
         positions.forEach(sub -> {
-            BlockPos foundPos = BlockPos.fromLong(((LongTag) sub).getLong());
+            BlockPos foundPos = BlockPos.fromLong(((NbtLong) sub).longValue());
             loadPositions.add(foundPos);
         });
 
-        super.fromTag(state, tag);
+        super.readNbt(tag);
     }
 
     public void update() {
@@ -74,7 +73,6 @@ public class ClaimAnchorBlockEntity extends BlockEntity implements Tickable {
         this.claim = claim;
     }
 
-    @Override
     public void tick() {
         assert world != null;
 

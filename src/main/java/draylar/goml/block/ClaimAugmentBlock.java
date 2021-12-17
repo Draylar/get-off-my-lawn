@@ -3,10 +3,14 @@ package draylar.goml.block;
 import draylar.goml.api.Augment;
 import draylar.goml.entity.ClaimAnchorBlockEntity;
 import draylar.goml.entity.ClaimAugmentBlockEntity;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -89,8 +93,18 @@ public class ClaimAugmentBlock extends Block implements Augment, BlockEntityProv
         super.onBreak(world, pos, state, player);
     }
 
+    @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockView world) {
-        return new ClaimAugmentBlockEntity();
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new ClaimAugmentBlockEntity(pos, state);
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+        if(world.isClient) {
+            return null;
+        }
+        return (w, pos, state1, blockEntity) -> ((ClaimAugmentBlockEntity)blockEntity).tick();
     }
 }
